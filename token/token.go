@@ -24,6 +24,8 @@ const (
 	RPAREN    = ")"
 	LBRACE    = "{"
 	RBRACE    = "}"
+	EQ        = "=="
+	NEQ       = "!="
 
 	FUNCTION = "FUNTION"
 	LET      = "LET"
