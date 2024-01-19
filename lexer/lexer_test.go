@@ -7,7 +7,8 @@ import (
 )
 
 func TestNextToken(t *testing.T) {
-	input := `cria five = 5;
+	input := `
+	cria five = 5;
 	cria ten = 10;
 
 	cria add = proc(x,y) {
@@ -18,10 +19,10 @@ func TestNextToken(t *testing.T) {
 	!-/*5;
 	5 < 10 > 5;
 
-	if (5 < 10) {
-		return true;
-	} else {
-		return false;
+	se (5 < 10) {
+		devolve vdd;
+	} senao {
+		devolve mentira;
 	}
 
 	10 == 10;
@@ -79,21 +80,21 @@ func TestNextToken(t *testing.T) {
 		{token.GT, ">"},
 		{token.INT, "5"},
 		{token.SEMICOLON, ";"},
-		{token.IF, "if"},
+		{token.IF, "se"},
 		{token.LPAREN, "("},
 		{token.INT, "5"},
 		{token.LT, "<"},
 		{token.INT, "10"},
 		{token.RPAREN, ")"},
 		{token.LBRACE, "{"},
-		{token.RETURN, "return"},
-		{token.TRUE, "true"},
+		{token.RETURN, "devolve"},
+		{token.TRUE, "vdd"},
 		{token.SEMICOLON, ";"},
 		{token.RBRACE, "}"},
-		{token.ELSE, "else"},
+		{token.ELSE, "senao"},
 		{token.LBRACE, "{"},
-		{token.RETURN, "return"},
-		{token.FALSE, "false"},
+		{token.RETURN, "devolve"},
+		{token.FALSE, "mentira"},
 		{token.SEMICOLON, ";"},
 		{token.RBRACE, "}"},
 		{token.INT, "10"},
