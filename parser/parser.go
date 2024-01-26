@@ -201,7 +201,6 @@ func (p *Parser) parsePrefixExpression() ast.Expression {
 
 	return expression
 }
-
 func (p *Parser) parseInfixExpression(left ast.Expression) ast.Expression {
 	expression := &ast.InfixExpression{
 
