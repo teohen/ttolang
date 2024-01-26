@@ -1,14 +1,16 @@
 # ttolang
+A interpreted , dinamic typed, and really slow language created by teteo.
+
 ## features of ttolang
-[] variables
-[] integers and bools
-[] arithmetic expressions
-[] built-in functions
-[] functions: first class and higher order 
-[] closures 
-[] string DS 
-[] List DS 
-[] HashMap DS
+- [ ] variables
+- [ ] integers and bools
+- [ ] arithmetic expressions
+- [ ] built-in functions
+- [ ] functions: first class and higher order 
+- [ ] closures 
+- [ ] string DS 
+- [ ] List DS 
+- [ ] HashMap DS
 
 
 Example code:
