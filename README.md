@@ -19,12 +19,19 @@ cria ano_nasc = 1912;
 cria ano_hoje = 2024;
 
 cria calc_tempo = proc(ano_inicial, ano_atual) {
-    devolve ano_atual - ano_inicial;
+    cria tempo_resultado = ano_atual - ano_inicial;
+    se (tempo_resultado > 100) {
+        mostra("mais de um século")
+    } senao {
+        mostra("menos de um seculo")
+    }
+    devolve tempo_resultado;
 }
 
 cria resultado = calc_tempo(ano_nasc, ano_hoje);
 mostra(resultado);
 
-
-// output: 112
+// output: 
+mais de um século
+112
 ```
