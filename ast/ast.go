@@ -2,6 +2,7 @@ package ast
 
 import (
 	"bytes"
+	"strings"
 
 	"github.com/teohen/ttolang/token"
 )
@@ -237,6 +238,34 @@ func (bs *BlockStatement) String() string {
 	for _, s := range bs.Statements {
 		out.WriteString(s.String())
 	}
+
+	return out.String()
+}
+
+type ProcLiteral struct {
+	Token      token.Token
+	Parameters []*Identifier
+	Body       *BlockStatement
+}
+
+func (pl *ProcLiteral) expressionNode() {}
+func (pl *ProcLiteral) TokenLiteral() string {
+	return pl.Token.Literal
+}
+func (pl *ProcLiteral) String() string {
+	var out bytes.Buffer
+
+	params := []string{}
+
+	for _, p := range pl.Parameters {
+		params = append(params, p.String())
+	}
+
+	out.WriteString(pl.TokenLiteral())
+	out.WriteString("(")
+	out.WriteString(strings.Join(params, ", "))
+	out.WriteString(") ")
+	out.WriteString(pl.Body.String())
 
 	return out.String()
 }
