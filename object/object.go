@@ -37,9 +37,6 @@ func (i *Integer) Type() ObjectType {
 	return INTEGER_OBJ
 }
 
-// TODO:
-// this little guy does not hold its own Value
-// the value true in ttolang is 'vdd' and false is 'mentira'
 type Boolean struct {
 	Value string
 }
