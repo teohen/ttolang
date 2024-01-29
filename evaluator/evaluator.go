@@ -63,6 +63,22 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		env.Set(node.Name.Value, val)
 	case *ast.Identifier:
 		return evalIdentifier(node, env)
+	case *ast.ProcLiteral:
+		params := node.Parameters
+		body := node.Body
+		return &object.Proc{Parameters: params, Env: env, Body: body}
+	case *ast.CallExpression:
+		proc := Eval(node.Function, env)
+		if isError(proc) {
+			return proc
+		}
+
+		args := evalExpressions(node.Arguments, env)
+		if len(args) == 1 && isError(args[0]) {
+			return args[0]
+		}
+
+		return applyProc(proc, args)
 	}
 
 	return nil
@@ -235,4 +251,51 @@ func evalIdentifier(node *ast.Identifier, env *object.Environment) object.Object
 	}
 
 	return val
+}
+
+func evalExpressions(exps []ast.Expression, env *object.Environment) []object.Object {
+	var result []object.Object
+
+	for _, e := range exps {
+		evaluated := Eval(e, env)
+		if isError(evaluated) {
+			return []object.Object{evaluated}
+		}
+
+		result = append(result, evaluated)
+	}
+
+	return result
+}
+
+func applyProc(pc object.Object, args []object.Object) object.Object {
+	proc, ok := pc.(*object.Proc)
+
+	if !ok {
+		return newError("not a proc: %s", proc.Type())
+	}
+
+	extendedEnv := extendProcEnv(proc, args)
+
+	evaluated := Eval(proc.Body, extendedEnv)
+
+	return unwrapDevolveValue(evaluated)
+}
+
+func extendProcEnv(proc *object.Proc, args []object.Object) *object.Environment {
+	env := object.NewEnclosedEnvironment(proc.Env)
+
+	for paramIdx, param := range proc.Parameters {
+		env.Set(param.Value, args[paramIdx])
+	}
+
+	return env
+}
+
+func unwrapDevolveValue(obj object.Object) object.Object {
+	if devolveValue, ok := obj.(*object.DevolveValue); ok {
+		return devolveValue.Value
+	}
+
+	return obj
 }

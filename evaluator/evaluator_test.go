@@ -166,7 +166,7 @@ func TestErrorHandling(t *testing.T) {
 			"unknown operator: BOOLEAN + BOOLEAN",
 		},
 		{
-			"if (10 > 1) { vdd + mentira; }",
+			"se (10 > 1) { vdd + mentira; }",
 			"unknown operator: BOOLEAN + BOOLEAN",
 		},
 		{`
@@ -211,6 +211,63 @@ func TestCriaStatements(t *testing.T) {
 	for _, tt := range tests {
 		testIntegerObject(t, testEval(tt.input), tt.expected)
 	}
+}
+
+func TestProcObject(t *testing.T) {
+	input := "proc(x) { x + 2; };"
+
+	evaluated := testEval(input)
+
+	proc, ok := evaluated.(*object.Proc)
+
+	if !ok {
+		t.Fatalf("object is not Proc. got=%T (%v)", evaluated, evaluated)
+	}
+
+	if len(proc.Parameters) != 1 {
+		t.Fatalf("function has wrong parameters. Parameters=%+v", proc.Parameters)
+	}
+
+	if proc.Parameters[0].String() != "x" {
+		t.Fatalf("parameter is not 'x'. got=%q", proc.Parameters[0])
+	}
+
+	expectedBody := "(x + 2)"
+
+	if proc.Body.String() != expectedBody {
+		t.Fatalf("body is not %q. got=%q", expectedBody, proc.Body.String())
+	}
+}
+
+func TestProcApplication(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected int64
+	}{
+		{"cria identity = proc(x) { x; }; identity(5);", 5},
+		{"cria identity = proc(x) { devolve x; }; identity(5);", 5},
+		{"cria double = proc(x) { x * 2; }; double(5);", 10},
+		{"cria add = proc(x, y) { x + y; }; add(5, 5);", 10},
+		{"cria add = proc(x, y) { x + y; }; add(5 + 5, add(5, 5));", 20},
+		{"proc(x) { x; }(5)", 5},
+	}
+
+	for _, tt := range tests {
+		testIntegerObject(t, testEval(tt.input), tt.expected)
+	}
+}
+
+func TestClosures(t *testing.T) {
+	input := `
+	cria newAdder = proc(x) {
+		proc(y) { x + y };
+	};
+
+	cria addTwo = newAdder(2);
+	addTwo(2);
+	`
+
+	testIntegerObject(t, testEval(input), 4)
 }
 
 func testNullObject(t *testing.T, obj object.Object) bool {

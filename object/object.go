@@ -1,7 +1,11 @@
 package object
 
 import (
+	"bytes"
 	"fmt"
+	"strings"
+
+	"github.com/teohen/ttolang/ast"
 )
 
 type ObjectType string
@@ -12,6 +16,7 @@ const (
 	NULL_OBJ          = "NULL"
 	DEVOLVE_VALUE_OBJ = "DEVOLVE_VALUE"
 	ERROR_OBJ         = "ERROR"
+	FUNCTION_OBJ      = "FUNCTION"
 )
 
 type Object interface {
@@ -81,19 +86,59 @@ func (e *Error) Inspect() string {
 
 type Environment struct {
 	store map[string]Object
+	outer *Environment
 }
 
 func NewEnvironment() *Environment {
 	s := make(map[string]Object)
-	return &Environment{store: s}
+	return &Environment{store: s, outer: nil}
+}
+
+func NewEnclosedEnvironment(outer *Environment) *Environment {
+	env := NewEnvironment()
+	env.outer = outer
+	return env
 }
 
 func (e *Environment) Get(name string) (Object, bool) {
 	obj, ok := e.store[name]
+
+	if !ok && e.outer != nil {
+		obj, ok = e.outer.Get(name)
+	}
 	return obj, ok
 }
 
 func (e *Environment) Set(name string, val Object) Object {
 	e.store[name] = val
 	return val
+}
+
+type Proc struct {
+	Parameters []*ast.Identifier
+	Body       *ast.BlockStatement
+	Env        *Environment
+}
+
+func (p *Proc) Type() ObjectType {
+	return FUNCTION_OBJ
+}
+
+func (p *Proc) Inspect() string {
+	var out bytes.Buffer
+
+	params := []string{}
+
+	for _, p := range p.Parameters {
+		params = append(params, p.String())
+	}
+
+	out.WriteString("proc")
+	out.WriteString("(")
+	out.Write([]byte(strings.Join(params, " ,")))
+	out.WriteString(") {\n")
+	out.WriteString(p.Body.String())
+	out.WriteString("\n}")
+
+	return out.String()
 }
