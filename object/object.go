@@ -17,6 +17,7 @@ const (
 	DEVOLVE_VALUE_OBJ = "DEVOLVE_VALUE"
 	ERROR_OBJ         = "ERROR"
 	FUNCTION_OBJ      = "FUNCTION"
+	STRING_OBJ        = "STRING"
 )
 
 type Object interface {
@@ -141,4 +142,15 @@ func (p *Proc) Inspect() string {
 	out.WriteString("\n}")
 
 	return out.String()
+}
+
+type String struct {
+	Value string
+}
+
+func (s *String) Type() ObjectType {
+	return STRING_OBJ
+}
+func (s *String) Inspect() string {
+	return s.Value
 }
