@@ -25,7 +25,7 @@ func TestNextToken(t *testing.T) {
 		devolve mentira;
 	}
 
-	10 == 10;
+	10 = 10;
 	10 != 9;
 	"foobar"
 	"foo bar"
@@ -100,7 +100,7 @@ func TestNextToken(t *testing.T) {
 		{token.SEMICOLON, ";"},
 		{token.RBRACE, "}"},
 		{token.INT, "10"},
-		{token.EQ, "=="},
+		{token.EQ, "="},
 		{token.INT, "10"},
 		{token.SEMICOLON, ";"},
 		{token.INT, "10"},

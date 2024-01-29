@@ -257,11 +257,11 @@ func TestParsingInfixExpressions(t *testing.T) {
 		{"5 / 5;", 5, "/", 5},
 		{"5 > 5;", 5, ">", 5},
 		{"5 < 5;", 5, "<", 5},
-		{"5 == 5;", 5, "==", 5},
+		{"5 = 5;", 5, "=", 5},
 		{"5 != 5;", 5, "!=", 5},
-		{"vdd == vdd;", true, "==", true},
+		{"vdd = vdd;", true, "=", true},
 		{"vdd != mentira;", true, "!=", false},
-		{"mentira == mentira;", false, "==", false},
+		{"mentira = mentira;", false, "=", false},
 	}
 
 	for _, tt := range infixTests {
@@ -328,20 +328,20 @@ func TestOperatorPrecedenceParsing(t *testing.T) {
 			"(3 + 4)((-5) * 5)",
 		},
 		{
-			"5 > 4 == 3 < 4",
-			"((5 > 4) == (3 < 4))",
+			"5 > 4 = 3 < 4",
+			"((5 > 4) = (3 < 4))",
 		},
 		{
 			"5 < 4 != 3 > 4",
 			"((5 < 4) != (3 > 4))",
 		},
 		{
-			"3 + 4 * 5 == 3 * 1 + 4 * 5",
-			"((3 + (4 * 5)) == ((3 * 1) + (4 * 5)))",
+			"3 + 4 * 5 = 3 * 1 + 4 * 5",
+			"((3 + (4 * 5)) = ((3 * 1) + (4 * 5)))",
 		},
 		{
-			"3 + 4 * 5 == 3 * 1 + 4 * 5",
-			"((3 + (4 * 5)) == ((3 * 1) + (4 * 5)))",
+			"3 + 4 * 5 = 3 * 1 + 4 * 5",
+			"((3 + (4 * 5)) = ((3 * 1) + (4 * 5)))",
 		},
 		{
 			"true",
@@ -352,12 +352,12 @@ func TestOperatorPrecedenceParsing(t *testing.T) {
 			"false",
 		},
 		{
-			"3 > 5 == false",
-			"((3 > 5) == false)",
+			"3 > 5 = mentira",
+			"((3 > 5) = mentira)",
 		},
 		{
-			"3 < 5 == true",
-			"((3 < 5) == true)",
+			"3 < 5 = vdd",
+			"((3 < 5) = vdd)",
 		},
 		{
 			"1 + (2 + 3) + 4",
@@ -376,8 +376,8 @@ func TestOperatorPrecedenceParsing(t *testing.T) {
 			"(-(5 + 5))",
 		},
 		{
-			"!(true == true)",
-			"(!(true == true))",
+			"!(true = true)",
+			"(!(true = true))",
 		},
 		{
 			"a + add(b * c) + d",
