@@ -60,7 +60,7 @@ func New(l *lexer.Lexer) *Parser {
 	p.registerPrefix(token.INT, p.parseIntegerLiteral)
 	p.registerPrefix(token.MINUS, p.parsePrefixExpression)
 	p.registerPrefix(token.BANG, p.parsePrefixExpression)
-	p.registerPrefix(token.TRUE, p.parseBoolean)
+	p.registerPrefix(token.VDD, p.parseBoolean)
 	p.registerPrefix(token.FALSE, p.parseBoolean)
 	p.registerPrefix(token.LPAREN, p.parseGroupedExpression)
 	p.registerPrefix(token.IF, p.parseSeExpression)
@@ -285,7 +285,7 @@ func (p *Parser) parseInfixExpression(left ast.Expression) ast.Expression {
 }
 
 func (p *Parser) parseBoolean() ast.Expression {
-	exp := &ast.Boolean{Token: p.curToken, Value: p.curTokenIs(token.TRUE)}
+	exp := &ast.Boolean{Token: p.curToken, Value: p.curTokenIs(token.VDD)}
 	return exp
 }
 

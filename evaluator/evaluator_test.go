@@ -39,28 +39,28 @@ func TestEvalIntegerExpression(t *testing.T) {
 func TestEvalBooleanExpression(t *testing.T) {
 	tests := []struct {
 		input  string
-		expect bool
+		expect string
 	}{
-		{"vdd", true},
-		{"mentira", false},
+		{"vdd", "vdd"},
+		{"mentira", "mentira"},
 
-		{"1 < 2", true},
-		{"1 > 2", false},
-		{"1 < 1", false},
-		{"1 > 1", false},
-		{"1 == 1", true},
-		{"1 != 1", false},
-		{"1 == 2", false},
-		{"1 != 2", true},
-		{"vdd == vdd", true},
-		{"mentira == mentira", true},
-		{"vdd == mentira", false},
-		{"vdd != mentira", true},
-		{"mentira != vdd", true},
-		{"(1 < 2) == vdd", true},
-		{"(1 < 2) == mentira", false},
-		{"(1 > 2) == vdd", false},
-		{"(1 > 2) == mentira", true},
+		{"1 < 2", "vdd"},
+		{"1 > 2", "mentira"},
+		{"1 < 1", "mentira"},
+		{"1 > 1", "mentira"},
+		{"1 == 1", "vdd"},
+		{"1 != 1", "mentira"},
+		{"1 == 2", "mentira"},
+		{"1 != 2", "vdd"},
+		{"vdd == vdd", "vdd"},
+		{"mentira == mentira", "vdd"},
+		{"vdd == mentira", "mentira"},
+		{"vdd != mentira", "vdd"},
+		{"mentira != vdd", "vdd"},
+		{"(1 < 2) == vdd", "vdd"},
+		{"(1 < 2) == mentira", "mentira"},
+		{"(1 > 2) == vdd", "mentira"},
+		{"(1 > 2) == mentira", "vdd"},
 	}
 
 	for _, tt := range tests {
@@ -72,14 +72,14 @@ func TestEvalBooleanExpression(t *testing.T) {
 func TestBangOperator(t *testing.T) {
 	tests := []struct {
 		input    string
-		expected bool
+		expected string
 	}{
-		{"!vdd", false},
-		{"!mentira", true},
-		{"!5", false},
-		{"!!vdd", true},
-		{"!!mentira", false},
-		{"!!5", true},
+		{"!vdd", "mentira"},
+		{"!mentira", "vdd"},
+		{"!5", "mentira"},
+		{"!!vdd", "vdd"},
+		{"!!mentira", "mentira"},
+		{"!!5", "vdd"},
 	}
 
 	for _, tt := range tests {
@@ -335,7 +335,7 @@ func testIntegerObject(t *testing.T, obj object.Object, expected int64) bool {
 
 	return true
 }
-func testBooleanObject(t *testing.T, obj object.Object, expected bool) bool {
+func testBooleanObject(t *testing.T, obj object.Object, expected string) bool {
 	result, ok := obj.(*object.Boolean)
 	if !ok {
 		t.Errorf("object is not Boolean. got=%T (%v)", obj, obj)
@@ -343,7 +343,7 @@ func testBooleanObject(t *testing.T, obj object.Object, expected bool) bool {
 	}
 
 	if result.Value != expected {
-		t.Errorf("object was wrong value. got=%t, want=%t", result.Value, expected)
+		t.Errorf("object was wrong value. got=%s, want=%s", result.Value, expected)
 		return false
 	}
 

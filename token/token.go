@@ -29,7 +29,7 @@ const (
 
 	FUNCTION = "FUNCTION"
 	LET      = "LET"
-	TRUE     = "TRUE"
+	VDD      = "VDD"
 	FALSE    = "FALSE"
 	IF       = "IF"
 	ELSE     = "ELSE"
@@ -44,7 +44,7 @@ const (
 var keywords = map[string]TokenType{
 	"proc":    FUNCTION,
 	"cria":    LET,
-	"vdd":     TRUE,
+	"vdd":     VDD,
 	"mentira": FALSE,
 	"se":      IF,
 	"senao":   ELSE,

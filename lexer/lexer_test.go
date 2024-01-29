@@ -90,7 +90,7 @@ func TestNextToken(t *testing.T) {
 		{token.RPAREN, ")"},
 		{token.LBRACE, "{"},
 		{token.RETURN, "devolve"},
-		{token.TRUE, "vdd"},
+		{token.VDD, "vdd"},
 		{token.SEMICOLON, ";"},
 		{token.RBRACE, "}"},
 		{token.ELSE, "senao"},

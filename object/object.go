@@ -41,14 +41,14 @@ func (i *Integer) Type() ObjectType {
 // this little guy does not hold its own Value
 // the value true in ttolang is 'vdd' and false is 'mentira'
 type Boolean struct {
-	Value bool
+	Value string
 }
 
 func (b *Boolean) Type() ObjectType {
 	return BOOLEAN_OBJ
 }
 func (b *Boolean) Inspect() string {
-	return fmt.Sprintf("%t", b.Value)
+	return b.Value
 }
 
 type Null struct {
