@@ -1,0 +1,11 @@
+cria idade :> 18;
+
+cria eh_de_maior :> proc (idade) {
+    se (idade > 17) {
+        devolve "maior de idade";
+    } senao {
+        devolve "menor de idade";
+    }
+}
+
+eh_de_maior(idade);

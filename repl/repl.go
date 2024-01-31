@@ -17,7 +17,7 @@ func Start(in io.Reader, out io.Writer) {
 	scanner := bufio.NewScanner(in)
 	env := object.NewEnvironment()
 	for {
-		fmt.Printf(PROMPT)
+		fmt.Print(PROMPT)
 		scanned := scanner.Scan()
 		if !scanned {
 			return
@@ -30,7 +30,7 @@ func Start(in io.Reader, out io.Writer) {
 		program := p.ParseProgram()
 
 		if len(p.Errors()) != 0 {
-			printParserErrors(out, p.Errors())
+			PrintParserErrors(out, p.Errors())
 			continue
 		}
 
@@ -44,7 +44,7 @@ func Start(in io.Reader, out io.Writer) {
 	}
 }
 
-func printParserErrors(out io.Writer, errors []string) {
+func PrintParserErrors(out io.Writer, errors []string) {
 	for _, msg := range errors {
 		io.WriteString(out, "\t"+msg+"\n")
 	}
