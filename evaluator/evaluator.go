@@ -249,13 +249,15 @@ func isError(obj object.Object) bool {
 }
 
 func evalIdentifier(node *ast.Identifier, env *object.Environment) object.Object {
-	val, ok := env.Get(node.Value)
-
-	if !ok {
-		return newError("identifier not found: " + node.Value)
+	if val, ok := env.Get(node.Value); ok {
+		return val
 	}
 
-	return val
+	if builtin, ok := builtins[node.Value]; ok {
+		return builtin
+	}
+
+	return newError("identificador é desconhecido: " + node.Value)
 }
 
 func evalExpressions(exps []ast.Expression, env *object.Environment) []object.Object {
@@ -274,17 +276,22 @@ func evalExpressions(exps []ast.Expression, env *object.Environment) []object.Ob
 }
 
 func applyProc(pc object.Object, args []object.Object) object.Object {
-	proc, ok := pc.(*object.Proc)
 
-	if !ok {
-		return newError("not a proc: %s", proc.Type())
+	switch proc := pc.(type) {
+	case *object.Proc:
+		extendedEnv := extendProcEnv(proc, args)
+
+		evaluated := Eval(proc.Body, extendedEnv)
+
+		return unwrapDevolveValue(evaluated)
+
+	case *object.Builtin:
+		return proc.Fn(args...)
+
+	default:
+		return newError("não é um proc: %s", proc.Type())
 	}
 
-	extendedEnv := extendProcEnv(proc, args)
-
-	evaluated := Eval(proc.Body, extendedEnv)
-
-	return unwrapDevolveValue(evaluated)
 }
 
 func extendProcEnv(proc *object.Proc, args []object.Object) *object.Environment {

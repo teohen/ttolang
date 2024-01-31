@@ -178,7 +178,7 @@ func TestErrorHandling(t *testing.T) {
 			}`,
 			"unknown operator: BOOLEAN + BOOLEAN",
 		},
-		{"foobar", "identifier not found: foobar"},
+		{"foobar", "identificador é desconhecido: foobar"},
 		{`"Hello" - "World"`, "unknown operator: STRING - STRING"},
 	}
 
@@ -300,6 +300,39 @@ func TestStringConcatenation(t *testing.T) {
 
 	if str.Value != "Hello World!" {
 		t.Fatalf("String has wrong value. got=%q", str.Value)
+	}
+
+}
+
+func TestBuiltinFunctions(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected interface{}
+	}{
+		{`tam("")`, 0},
+		{`tam("four")`, 4},
+		{`tam("hello world")`, 11},
+		{`tam(1)`, "tipo de parametro de 'tam' errado. recebeu INTEGER"},
+		{`tam("one", "two")`, "quantidade errada de parametros. recebeu=2, aceita=1"},
+	}
+
+	for _, tt := range tests {
+		evaluated := testEval(tt.input)
+
+		switch expected := tt.expected.(type) {
+		case int:
+			testIntegerObject(t, evaluated, int64(expected))
+		case string:
+			errObj, ok := evaluated.(*object.Error)
+			if !ok {
+				t.Errorf("object is not Error. got=%T (%v)", evaluated, evaluated)
+				continue
+			}
+
+			if errObj.Message != expected {
+				t.Errorf("wrong error message. expected=%q, got=%q", expected, errObj.Message)
+			}
+		}
 	}
 
 }
