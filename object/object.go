@@ -21,6 +21,7 @@ const (
 	FUNCTION_OBJ      = "FUNCTION"
 	STRING_OBJ        = "STRING"
 	BUILTIN_OBJ       = "BUILTIN"
+	LISTA_OBJ         = "LISTA"
 )
 
 type Object interface {
@@ -164,4 +165,29 @@ func (b *Builtin) Type() ObjectType {
 }
 func (b *Builtin) Inspect() string {
 	return "builtin proc"
+}
+
+type Lista struct {
+	Elements []Object
+}
+
+func (l *Lista) Type() ObjectType {
+
+	return LISTA_OBJ
+}
+
+func (l *Lista) Inspect() string {
+	var out bytes.Buffer
+
+	elements := []string{}
+
+	for _, e := range l.Elements {
+		elements = append(elements, e.Inspect())
+	}
+
+	out.WriteString("[")
+	out.WriteString(strings.Join(elements, ", "))
+	out.WriteString("]")
+
+	return out.String()
 }

@@ -80,6 +80,27 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 
 		return applyProc(proc, args)
 
+	case *ast.ListaLiteral:
+		elements := evalExpressions(node.Elements, env)
+		if len(elements) == 1 && isError(elements[0]) {
+			return elements[0]
+		}
+
+		return &object.Lista{Elements: elements}
+	case *ast.IndexExpression:
+		left := Eval(node.Left, env)
+
+		if isError(left) {
+			return left
+		}
+
+		index := Eval(node.Index, env)
+		if isError(index) {
+			return index
+		}
+
+		return evalIndexExpression(left, index)
+
 	case *ast.StringLiteral:
 		return &object.String{Value: node.Value}
 	}
@@ -320,4 +341,27 @@ func evalStringInfixExpression(operator string, left, right object.Object) objec
 	lefVal := left.(*object.String).Value
 	rigVal := right.(*object.String).Value
 	return &object.String{Value: lefVal + rigVal}
+}
+
+func evalIndexExpression(left, index object.Object) object.Object {
+	switch {
+	case left.Type() == object.LISTA_OBJ && index.Type() == object.INTEGER_OBJ:
+		return evalListaIndexExpression(left, index)
+	default:
+		return newError("operado de indice não aceito: %s", left.Type())
+	}
+}
+
+func evalListaIndexExpression(lista, index object.Object) object.Object {
+	listaObject := lista.(*object.Lista)
+	idx := index.(*object.Integer).Value
+
+	max := int64(len(listaObject.Elements) - 1)
+	// TODO: retornar um erro ao acessar um array com indice nao existente
+	if idx < 0 || idx > max {
+		return NULL
+	}
+
+	return listaObject.Elements[idx]
+
 }

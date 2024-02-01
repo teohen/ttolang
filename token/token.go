@@ -26,6 +26,8 @@ const (
 	RBRACE    = "}"
 	EQ        = "="
 	NEQ       = "!="
+	RBRACKET  = "RBRACKET"
+	LBRACKET  = "LBRACKET"
 
 	FUNCTION = "FUNCTION"
 	LET      = "LET"

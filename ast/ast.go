@@ -310,3 +310,49 @@ func (sl *StringLiteral) TokenLiteral() string {
 func (sl *StringLiteral) String() string {
 	return sl.Token.Literal
 }
+
+type ListaLiteral struct {
+	Token    token.Token
+	Elements []Expression
+}
+
+func (ll *ListaLiteral) expressionNode() {}
+func (ll *ListaLiteral) TokenLiteral() string {
+	return ll.Token.Literal
+}
+func (ll *ListaLiteral) String() string {
+	var out bytes.Buffer
+	elements := []string{}
+
+	for _, ll := range ll.Elements {
+		elements = append(elements, ll.String())
+	}
+
+	out.WriteString("[")
+	out.WriteString(strings.Join(elements, ", "))
+	out.WriteString("]")
+
+	return out.String()
+}
+
+type IndexExpression struct {
+	Token token.Token
+	Left  Expression
+	Index Expression
+}
+
+func (ie *IndexExpression) expressionNode() {}
+func (ie *IndexExpression) TokenLiteral() string {
+	return ie.Token.Literal
+}
+
+func (ie *IndexExpression) String() string {
+	var out bytes.Buffer
+
+	out.WriteString("(")
+	out.WriteString(ie.Left.String())
+	out.WriteString("[")
+	out.WriteString(ie.Index.String())
+	out.WriteString("])")
+	return out.String()
+}
