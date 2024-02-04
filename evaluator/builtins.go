@@ -1,6 +1,8 @@
 package evaluator
 
 import (
+	"fmt"
+
 	"github.com/teohen/ttolang/object"
 )
 
@@ -39,6 +41,15 @@ var builtins = map[string]*object.Builtin{
 			newElements[lenght] = args[1]
 
 			return &object.Lista{Elements: newElements}
+		},
+	},
+	"mostra": &object.Builtin{
+		Fn: func(args ...object.Object) object.Object {
+			for _, arg := range args {
+				fmt.Println(arg.Inspect())
+			}
+
+			return NULL
 		},
 	},
 }

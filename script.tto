@@ -1,3 +1,4 @@
-cria listagem <- ["teteo", 35, 35 - 18]
-listagem[2];
+cria nome <- "teteo";
+cria idade <- "35";
 
+mostra("nome: "+nome, "idade: "+idade);
