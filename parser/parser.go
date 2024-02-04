@@ -85,6 +85,10 @@ func New(l *lexer.Lexer) *Parser {
 	return p
 }
 
+func newError(format string, a ...interface{}) string {
+	return fmt.Sprintf("Problema de parser: "+format, a...)
+}
+
 func (p *Parser) nextToken() {
 	p.curToken = p.peekToken
 	p.peekToken = p.l.NextToken()
@@ -113,12 +117,12 @@ func (p *Parser) Errors() []string {
 }
 
 func (p *Parser) peekError(t token.TokenType) {
-	msg := fmt.Sprintf("expected next token to be %s, got %s instead", t, p.peekToken.Type)
+	msg := newError(fmt.Sprintf("esperava que o próximo item fosse '%s' mas recebeu '%s' (%v)", t, p.peekToken.Literal, p.peekToken.Type))
 	p.errors = append(p.errors, msg)
 }
 
-func (p *Parser) noPrefixParseFnError(t token.TokenType) {
-	msg := fmt.Sprintf("no prefix parse function for %s found", t)
+func (p *Parser) noPrefixParseFnError(t token.Token) {
+	msg := newError(fmt.Sprintf("nao soube lidar com %s.", t.Literal))
 	p.errors = append(p.errors, msg)
 }
 
@@ -205,7 +209,7 @@ func (p *Parser) parseExpression(precedence int) ast.Expression {
 	prefix := p.prefixParseFns[p.curToken.Type]
 
 	if prefix == nil {
-		p.noPrefixParseFnError(p.curToken.Type)
+		p.noPrefixParseFnError(p.curToken)
 		return nil
 	}
 
@@ -251,7 +255,7 @@ func (p *Parser) parseIntegerLiteral() ast.Expression {
 	value, err := strconv.ParseInt(p.curToken.Literal, 0, 64)
 
 	if err != nil {
-		msg := fmt.Sprintf("could not parse %q as integer", p.curToken.Literal)
+		msg := fmt.Sprintf("impossivel transformar %s em tipo INTEIRO", p.curToken.Literal)
 		p.errors = append(p.errors, msg)
 		return nil
 	}

@@ -9,7 +9,7 @@ import (
 
 var (
 	TRUE  = &object.Boolean{Value: "vdd"}
-	FALSE = &object.Boolean{Value: "mentira"}
+	FALSE = &object.Boolean{Value: "falso"}
 	NULL  = &object.Null{}
 )
 
@@ -140,7 +140,7 @@ func evalPrefixExpression(operator string, right object.Object) object.Object {
 		return evalMinusPrefixOperatorExpression(right)
 
 	default:
-		return newError("unknown operator: %s%s", operator, right.Type())
+		return newError("operador desconhecido: %s %s", operator, right.Type())
 	}
 }
 
@@ -160,7 +160,7 @@ func evalBangOperatorExpression(right object.Object) object.Object {
 
 func evalMinusPrefixOperatorExpression(right object.Object) object.Object {
 	if right.Type() != object.INTEGER_OBJ {
-		return newError("unknown operator: -%s", right.Type())
+		return newError("operador desconhecido: -%s", right.Type())
 	}
 
 	value := right.(*object.Integer).Value
@@ -176,11 +176,11 @@ func evalInfixExpression(operator string, left, right object.Object) object.Obje
 	case operator == "!=":
 		return nativeBoolToBooleanObject(left != right)
 	case left.Type() != right.Type():
-		return newError("type mismatch: %s %s %s", left.Type(), operator, right.Type())
+		return newError("tipos diferentes: %s %s %s", left.Type(), operator, right.Type())
 	case left.Type() == object.STRING_OBJ && right.Type() == object.STRING_OBJ:
 		return evalStringInfixExpression(operator, left, right)
 	default:
-		return newError("unknown operator: %s %s %s", left.Type(), operator, right.Type())
+		return newError("operador desconhecido: %s %s %s", left.Type(), operator, right.Type())
 	}
 }
 
@@ -207,7 +207,7 @@ func evalIntegerInfixExpression(operator string, left, right object.Object) obje
 	case "!=":
 		return nativeBoolToBooleanObject(leftVal != rightVal)
 	default:
-		return newError("unknown operator: %s %s %s", left.Type(), operator, right.Type())
+		return newError("operador desconhecido: %s %s %s", left.Type(), operator, right.Type())
 	}
 }
 
@@ -335,7 +335,7 @@ func unwrapDevolveValue(obj object.Object) object.Object {
 
 func evalStringInfixExpression(operator string, left, right object.Object) object.Object {
 	if operator != "+" {
-		return newError("unknown operator: %s %s %s", left.Type(), operator, right.Type())
+		return newError("operador desconhecido: %s %s %s", left.Type(), operator, right.Type())
 	}
 
 	lefVal := left.(*object.String).Value
@@ -348,7 +348,7 @@ func evalIndexExpression(left, index object.Object) object.Object {
 	case left.Type() == object.LISTA_OBJ && index.Type() == object.INTEGER_OBJ:
 		return evalListaIndexExpression(left, index)
 	default:
-		return newError("operado de indice não aceito: %s", left.Type())
+		return newError("operador de indice não aceito: %s", left.Type())
 	}
 }
 

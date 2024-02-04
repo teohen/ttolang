@@ -1,4 +1,8 @@
-cria nome <- "teteo";
-cria idade <- "35";
+cria cod <- 3;
 
-mostra("nome: "+nome, "idade: "+idade);
+se (cod < 3 = !falso) 
+{
+    mostra("menor");
+}senao {
+    mostra("maior")
+};

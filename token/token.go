@@ -8,9 +8,9 @@ type Token struct {
 }
 
 const (
-	ILLEGAL   = "ILLEGAL"
-	EOF       = "EOF"
-	IDENT     = "IDENT"
+	ILLEGAL   = "DESCONHECIDO"
+	EOF       = "FIM_DE_ARQUIVO"
+	IDENT     = "IDENTIFICADOR"
 	INT       = "INT"
 	ASSIGN    = "<-"
 	PLUS      = "+"
@@ -26,16 +26,16 @@ const (
 	RBRACE    = "}"
 	EQ        = "="
 	NEQ       = "!="
-	RBRACKET  = "RBRACKET"
-	LBRACKET  = "LBRACKET"
+	RBRACKET  = "CHAVES_DIR"
+	LBRACKET  = "CHAVES_ESQ"
 
-	FUNCTION = "FUNCTION"
-	LET      = "LET"
+	FUNCTION = "PROCESSO"
+	LET      = "CRIACAO"
 	VDD      = "VDD"
 	FALSE    = "FALSE"
-	IF       = "IF"
-	ELSE     = "ELSE"
-	RETURN   = "RETURN"
+	IF       = "SE"
+	ELSE     = "SENAO"
+	RETURN   = "DEVOLVE"
 
 	LT = "<"
 	GT = ">"
@@ -47,7 +47,7 @@ var keywords = map[string]TokenType{
 	"proc":    FUNCTION,
 	"cria":    LET,
 	"vdd":     VDD,
-	"mentira": FALSE,
+	"falso":   FALSE,
 	"se":      IF,
 	"senao":   ELSE,
 	"devolve": RETURN,

@@ -22,7 +22,7 @@ func TestNextToken(t *testing.T) {
 	se (5 < 10) {
 		devolve vdd;
 	} senao {
-		devolve mentira;
+		devolve falso;
 	}
 
 	10 = 10;
@@ -97,7 +97,7 @@ func TestNextToken(t *testing.T) {
 		{token.ELSE, "senao"},
 		{token.LBRACE, "{"},
 		{token.RETURN, "devolve"},
-		{token.FALSE, "mentira"},
+		{token.FALSE, "falso"},
 		{token.SEMICOLON, ";"},
 		{token.RBRACE, "}"},
 		{token.INT, "10"},
