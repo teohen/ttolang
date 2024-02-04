@@ -1,5 +1,5 @@
 # ttolang
-A interpreted , dinamic typed, and really slow language created by teteo.
+A interpreted, dinamic typed, and really cool language created by me.
 
 ## features of ttolang
 - [x] variables
