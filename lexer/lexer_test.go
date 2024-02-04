@@ -8,14 +8,14 @@ import (
 
 func TestNextToken(t *testing.T) {
 	input := `
-	cria five :> 5;
-	cria ten :> 10;
+	cria five <- 5;
+	cria ten <- 10;
 
-	cria add :> proc(x,y) {
+	cria add <- proc(x,y) {
 		x + y
 	};
 
-	cria result :> add(five, ten);
+	cria result <- add(five, ten);
 	!-/*5;
 	5 < 10 > 5;
 
@@ -38,17 +38,17 @@ func TestNextToken(t *testing.T) {
 	}{
 		{token.LET, "cria"},
 		{token.IDENT, "five"},
-		{token.ASSIGN, ":>"},
+		{token.ASSIGN, "<-"},
 		{token.INT, "5"},
 		{token.SEMICOLON, ";"},
 		{token.LET, "cria"},
 		{token.IDENT, "ten"},
-		{token.ASSIGN, ":>"},
+		{token.ASSIGN, "<-"},
 		{token.INT, "10"},
 		{token.SEMICOLON, ";"},
 		{token.LET, "cria"},
 		{token.IDENT, "add"},
-		{token.ASSIGN, ":>"},
+		{token.ASSIGN, "<-"},
 		{token.FUNCTION, "proc"},
 		{token.LPAREN, "("},
 		{token.IDENT, "x"},
@@ -63,7 +63,7 @@ func TestNextToken(t *testing.T) {
 		{token.SEMICOLON, ";"},
 		{token.LET, "cria"},
 		{token.IDENT, "result"},
-		{token.ASSIGN, ":>"},
+		{token.ASSIGN, "<-"},
 		{token.IDENT, "add"},
 		{token.LPAREN, "("},
 		{token.IDENT, "five"},

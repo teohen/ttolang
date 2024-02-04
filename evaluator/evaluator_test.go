@@ -204,10 +204,10 @@ func TestCriaStatements(t *testing.T) {
 		input    string
 		expected int64
 	}{
-		{"cria a :> 5; a;", 5},
-		{"cria a :> 5 * 5; a;", 25},
-		{"cria a :> 5; cria b :> a; b;", 5},
-		{"cria a :> 5; cria b :> a; cria c :> a + b + 5; c;", 15},
+		{"cria a <- 5; a;", 5},
+		{"cria a <- 5 * 5; a;", 25},
+		{"cria a <- 5; cria b <- a; b;", 5},
+		{"cria a <- 5; cria b <- a; cria c <- a + b + 5; c;", 15},
 	}
 	for _, tt := range tests {
 		testIntegerObject(t, testEval(tt.input), tt.expected)
@@ -245,11 +245,11 @@ func TestProcApplication(t *testing.T) {
 		input    string
 		expected int64
 	}{
-		{"cria identity :> proc(x) { x; }; identity(5);", 5},
-		{"cria identity :> proc(x) { devolve x; }; identity(5);", 5},
-		{"cria double :> proc(x) { x * 2; }; double(5);", 10},
-		{"cria add :> proc(x, y) { x + y; }; add(5, 5);", 10},
-		{"cria add :> proc(x, y) { x + y; }; add(5 + 5, add(5, 5));", 20},
+		{"cria identity <- proc(x) { x; }; identity(5);", 5},
+		{"cria identity <- proc(x) { devolve x; }; identity(5);", 5},
+		{"cria double <- proc(x) { x * 2; }; double(5);", 10},
+		{"cria add <- proc(x, y) { x + y; }; add(5, 5);", 10},
+		{"cria add <- proc(x, y) { x + y; }; add(5 + 5, add(5, 5));", 20},
 		{"proc(x) { x; }(5)", 5},
 	}
 
@@ -260,11 +260,11 @@ func TestProcApplication(t *testing.T) {
 
 func TestClosures(t *testing.T) {
 	input := `
-	cria newAdder :> proc(x) {
+	cria newAdder <- proc(x) {
 		proc(y) { x + y };
 	};
 
-	cria addTwo :> newAdder(2);
+	cria addTwo <- newAdder(2);
 	addTwo(2);
 	`
 
@@ -375,7 +375,7 @@ func TestIndexExpressions(t *testing.T) {
 			3,
 		},
 		{
-			"cria i :> 0; [1][i];",
+			"cria i <- 0; [1][i];",
 			1,
 		},
 		{
@@ -383,15 +383,15 @@ func TestIndexExpressions(t *testing.T) {
 			3,
 		},
 		{
-			"cria myArray :> [1, 2, 3]; myArray[2];",
+			"cria myArray <- [1, 2, 3]; myArray[2];",
 			3,
 		},
 		{
-			"cria myArray :> [1, 2, 3]; myArray[0] + myArray[1] + myArray[2];",
+			"cria myArray <- [1, 2, 3]; myArray[0] + myArray[1] + myArray[2];",
 			6,
 		},
 		{
-			"cria myArray :> [1, 2, 3]; cria i :> myArray[0]; myArray[i]",
+			"cria myArray <- [1, 2, 3]; cria i <- myArray[0]; myArray[i]",
 			2,
 		},
 		{

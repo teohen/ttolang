@@ -12,7 +12,7 @@ const (
 	EOF       = "EOF"
 	IDENT     = "IDENT"
 	INT       = "INT"
-	ASSIGN    = ":>"
+	ASSIGN    = "<-"
 	PLUS      = "+"
 	MINUS     = "-"
 	BANG      = "!"

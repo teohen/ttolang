@@ -14,9 +14,9 @@ func TestCriaStatements(t *testing.T) {
 		expectedIdentifier string
 		expectedValue      interface{}
 	}{
-		{"cria x :> 5;", "x", 5},
-		{"cria y :> vdd;", "y", true},
-		{"cria foobar :> y;", "foobar", "y"},
+		{"cria x <- 5;", "x", 5},
+		{"cria y <- vdd;", "y", true},
+		{"cria foobar <- y;", "foobar", "y"},
 	}
 
 	for _, tt := range tests {

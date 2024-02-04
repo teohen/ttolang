@@ -1,11 +1,3 @@
-cria idade :> 18;
+cria listagem <- ["teteo", 35, 35 - 18]
+listagem[2];
 
-cria eh_de_maior :> proc (idade) {
-    se (idade > 17) {
-        devolve "maior de idade";
-    } senao {
-        devolve "menor de idade";
-    }
-}
-
-eh_de_maior(idade);
