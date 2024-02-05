@@ -13,12 +13,12 @@ type ObjectType string
 type BuiltinFunction func(args ...Object) Object
 
 const (
-	INTEGER_OBJ       = "INTEGER"
-	BOOLEAN_OBJ       = "BOOLEAN"
-	NULL_OBJ          = "NULL"
+	INTEGER_OBJ       = "INTEIRO"
+	BOOLEAN_OBJ       = "BOOLEANO"
+	NULL_OBJ          = "NULO"
 	DEVOLVE_VALUE_OBJ = "DEVOLVE_VALUE"
-	ERROR_OBJ         = "ERROR"
-	FUNCTION_OBJ      = "FUNCTION"
+	ERROR_OBJ         = "ERRO"
+	FUNCTION_OBJ      = "PROCESSO"
 	STRING_OBJ        = "STRING"
 	BUILTIN_OBJ       = "BUILTIN"
 	LISTA_OBJ         = "LISTA"

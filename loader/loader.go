@@ -3,7 +3,6 @@ package loader
 import (
 	"bufio"
 	"fmt"
-	"io"
 	"log"
 	"os"
 
@@ -29,8 +28,6 @@ func Load(path string) {
 
 	scanner := bufio.NewScanner(file)
 	env := object.NewEnvironment()
-	var out io.Writer
-
 	code := ""
 
 	for scanner.Scan() {
@@ -43,10 +40,13 @@ func Load(path string) {
 	program := p.ParseProgram()
 
 	if len(p.Errors()) != 0 {
-		repl.PrintParserErrors(out, p.Errors())
+		repl.PrintParserErrors(os.Stdout, p.Errors())
+		return
 	}
 
 	evaluated := evaluator.Eval(program, env)
 
-	fmt.Println(evaluated.Inspect())
+	if evaluated != nil {
+		fmt.Println(evaluated.Inspect())
+	}
 }

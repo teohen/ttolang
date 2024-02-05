@@ -42,25 +42,25 @@ func TestEvalBooleanExpression(t *testing.T) {
 		expect string
 	}{
 		{"vdd", "vdd"},
-		{"mentira", "mentira"},
+		{"falso", "falso"},
 
 		{"1 < 2", "vdd"},
-		{"1 > 2", "mentira"},
-		{"1 < 1", "mentira"},
-		{"1 > 1", "mentira"},
+		{"1 > 2", "falso"},
+		{"1 < 1", "falso"},
+		{"1 > 1", "falso"},
 		{"1 = 1", "vdd"},
-		{"1 != 1", "mentira"},
-		{"1 = 2", "mentira"},
+		{"1 != 1", "falso"},
+		{"1 = 2", "falso"},
 		{"1 != 2", "vdd"},
 		{"vdd = vdd", "vdd"},
-		{"mentira = mentira", "vdd"},
-		{"vdd = mentira", "mentira"},
-		{"vdd != mentira", "vdd"},
-		{"mentira != vdd", "vdd"},
+		{"falso = falso", "vdd"},
+		{"vdd = falso", "falso"},
+		{"vdd != falso", "vdd"},
+		{"falso != vdd", "vdd"},
 		{"(1 < 2) = vdd", "vdd"},
-		{"(1 < 2) = mentira", "mentira"},
-		{"(1 > 2) = vdd", "mentira"},
-		{"(1 > 2) = mentira", "vdd"},
+		{"(1 < 2) = falso", "falso"},
+		{"(1 > 2) = vdd", "falso"},
+		{"(1 > 2) = falso", "vdd"},
 	}
 
 	for _, tt := range tests {
@@ -74,11 +74,11 @@ func TestBangOperator(t *testing.T) {
 		input    string
 		expected string
 	}{
-		{"!vdd", "mentira"},
-		{"!mentira", "vdd"},
-		{"!5", "mentira"},
+		{"!vdd", "falso"},
+		{"!falso", "vdd"},
+		{"!5", "falso"},
 		{"!!vdd", "vdd"},
-		{"!!mentira", "mentira"},
+		{"!!falso", "falso"},
 		{"!!5", "vdd"},
 	}
 
@@ -94,7 +94,7 @@ func TestIfElseExpressions(t *testing.T) {
 		expected interface{}
 	}{
 		{"se (vdd) { 10 }", 10},
-		{"se (mentira) { 10 }", nil},
+		{"se (falso) { 10 }", nil},
 		{"se (1) { 10 }", 10},
 		{"se (1 < 2) { 10 }", 10},
 		{"se (1 > 2) { 10 }", nil},
@@ -147,39 +147,39 @@ func TestErrorHandling(t *testing.T) {
 	}{
 		{
 			"5 + vdd;",
-			"type mismatch: INTEGER + BOOLEAN",
+			"tipos diferentes: INTEIRO + BOOLEANO",
 		},
 		{
 			"5 + vdd; 5;",
-			"type mismatch: INTEGER + BOOLEAN",
+			"tipos diferentes: INTEIRO + BOOLEANO",
 		},
 		{
 			"-vdd",
-			"unknown operator: -BOOLEAN",
+			"operador desconhecido: -BOOLEANO",
 		},
 		{
-			"vdd + mentira;",
-			"unknown operator: BOOLEAN + BOOLEAN",
+			"vdd + falso;",
+			"operador desconhecido: BOOLEANO + BOOLEANO",
 		},
 		{
-			"5; vdd + mentira; 5",
-			"unknown operator: BOOLEAN + BOOLEAN",
+			"5; vdd + falso; 5",
+			"operador desconhecido: BOOLEANO + BOOLEANO",
 		},
 		{
-			"se (10 > 1) { vdd + mentira; }",
-			"unknown operator: BOOLEAN + BOOLEAN",
+			"se (10 > 1) { vdd + falso; }",
+			"operador desconhecido: BOOLEANO + BOOLEANO",
 		},
 		{`
 			se (10 > 1) {
 				se (10 > 1) {
-					devolve vdd + mentira;
+					devolve vdd + falso;
 				}
 				devolve 1;
 			}`,
-			"unknown operator: BOOLEAN + BOOLEAN",
+			"operador desconhecido: BOOLEANO + BOOLEANO",
 		},
 		{"foobar", "identificador é desconhecido: foobar"},
-		{`"Hello" - "World"`, "unknown operator: STRING - STRING"},
+		{`"Hello" - "World"`, "operador desconhecido: STRING - STRING"},
 	}
 
 	for _, tt := range tests {
@@ -312,7 +312,7 @@ func TestBuiltinFunctions(t *testing.T) {
 		{`tam("")`, 0},
 		{`tam("four")`, 4},
 		{`tam("hello world")`, 11},
-		{`tam(1)`, "tipo de parametro de 'tam' errado. recebeu INTEGER"},
+		{`tam(1)`, "tipo de parametro de 'tam' errado. recebeu INTEIRO"},
 		{`tam("one", "two")`, "quantidade errada de parametros. recebeu=2, aceita=1"},
 	}
 

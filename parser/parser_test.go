@@ -190,7 +190,7 @@ func TestParsingPrefixExpressions(t *testing.T) {
 		{"!5;", "!", 5},
 		{"-15;", "-", 15},
 		{"!vdd;", "!", true},
-		{"!mentira;", "!", false},
+		{"!falso;", "!", false},
 	}
 
 	for _, tt := range prefixTests {
@@ -240,8 +240,8 @@ func TestParsingInfixExpressions(t *testing.T) {
 		{"5 = 5;", 5, "=", 5},
 		{"5 != 5;", 5, "!=", 5},
 		{"vdd = vdd;", true, "=", true},
-		{"vdd != mentira;", true, "!=", false},
-		{"mentira = mentira;", false, "=", false},
+		{"vdd != falso;", true, "!=", false},
+		{"falso = falso;", false, "=", false},
 	}
 
 	for _, tt := range infixTests {
@@ -332,8 +332,8 @@ func TestOperatorPrecedenceParsing(t *testing.T) {
 			"false",
 		},
 		{
-			"3 > 5 = mentira",
-			"((3 > 5) = mentira)",
+			"3 > 5 = falso",
+			"((3 > 5) = falso)",
 		},
 		{
 			"3 < 5 = vdd",
@@ -397,7 +397,7 @@ func TestBooleanExpression(t *testing.T) {
 		expectedBoolean bool
 	}{
 		{"vdd;", true},
-		{"mentira;", false},
+		{"falso;", false},
 	}
 
 	for _, tt := range tests {
@@ -764,7 +764,7 @@ func testBooleanLiteral(t *testing.T, exp ast.Expression, value bool) bool {
 	if value == true {
 		literal = "vdd"
 	} else {
-		literal = "mentira"
+		literal = "falso"
 	}
 
 	if bo.TokenLiteral() != literal {
