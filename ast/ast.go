@@ -359,7 +359,7 @@ func (ie *IndexExpression) String() string {
 
 type RepeteExpression struct {
 	Token     token.Token
-	From      CriaStatement
+	Ident     Identifier
 	Condition Expression
 	Body      BlockStatement
 }
@@ -373,8 +373,7 @@ func (rp *RepeteExpression) String() string {
 
 	out.WriteString("Repete")
 	out.WriteString("( ")
-	out.WriteString(rp.From.String())
-	out.WriteString("ate")
+	out.WriteString(rp.Ident.String())
 	out.WriteString(rp.Condition.String())
 	out.WriteString(")")
 	out.WriteString(rp.Body.String())

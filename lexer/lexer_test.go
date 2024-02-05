@@ -32,7 +32,7 @@ func TestNextToken(t *testing.T) {
 	[1, 2];
 
 	repete(i de 0 ate 10){
-		10
+		i
 	}
 	`
 
@@ -129,7 +129,7 @@ func TestNextToken(t *testing.T) {
 		{token.INT, "10"},
 		{token.RPAREN, ")"},
 		{token.LBRACE, "{"},
-		{token.INT, "10"},
+		{token.IDENT, "i"},
 		{token.RBRACE, "}"},
 		{token.EOF, ""},
 	}
