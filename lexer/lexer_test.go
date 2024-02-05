@@ -30,6 +30,10 @@ func TestNextToken(t *testing.T) {
 	"foobar"
 	"foo bar"
 	[1, 2];
+
+	repete(i de 0 ate 10){
+		10
+	}
 	`
 
 	tests := []struct {
@@ -116,6 +120,17 @@ func TestNextToken(t *testing.T) {
 		{token.INT, "2"},
 		{token.RBRACKET, "]"},
 		{token.SEMICOLON, ";"},
+		{token.LOOP, "repete"},
+		{token.LPAREN, "("},
+		{token.IDENT, "i"},
+		{token.FROM, "de"},
+		{token.INT, "0"},
+		{token.TO, "ate"},
+		{token.INT, "10"},
+		{token.RPAREN, ")"},
+		{token.LBRACE, "{"},
+		{token.INT, "10"},
+		{token.RBRACE, "}"},
 		{token.EOF, ""},
 	}
 

@@ -356,3 +356,29 @@ func (ie *IndexExpression) String() string {
 	out.WriteString("])")
 	return out.String()
 }
+
+type RepeteExpression struct {
+	Token     token.Token
+	From      CriaStatement
+	Condition Expression
+	Body      BlockStatement
+}
+
+func (rp *RepeteExpression) expressionNode() {}
+func (rp *RepeteExpression) TokenLiteral() string {
+	return rp.Token.Literal
+}
+func (rp *RepeteExpression) String() string {
+	var out bytes.Buffer
+
+	out.WriteString("Repete")
+	out.WriteString("( ")
+	out.WriteString(rp.From.String())
+	out.WriteString("ate")
+	out.WriteString(rp.Condition.String())
+	out.WriteString(")")
+	out.WriteString(rp.Body.String())
+
+	return out.String()
+
+}

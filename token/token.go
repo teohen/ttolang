@@ -36,6 +36,9 @@ const (
 	IF       = "SE"
 	ELSE     = "SENAO"
 	RETURN   = "DEVOLVE"
+	LOOP     = "REPETE"
+	FROM     = "DE"
+	TO       = "ATE"
 
 	LT = "<"
 	GT = ">"
@@ -51,6 +54,9 @@ var keywords = map[string]TokenType{
 	"se":      IF,
 	"senao":   ELSE,
 	"devolve": RETURN,
+	"repete":  LOOP,
+	"de":      FROM,
+	"ate":     TO,
 }
 
 func LookupIdent(ident string) TokenType {

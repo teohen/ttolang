@@ -706,6 +706,58 @@ func TestParsingIndexExpressions(t *testing.T) {
 
 }
 
+func TestRepeteExpression(t *testing.T) {
+	input := `
+		repete (i <- 0 ate 9) {
+			i
+		};
+		`
+
+	l := lexer.New(input)
+	p := New(l)
+	program := p.ParseProgram()
+	checkParserErrors(t, p)
+
+	if len(program.Statements) != 1 {
+		t.Fatalf("program.body does not contain %d statements. got=%d\n", 1, len(program.Statements))
+	}
+
+	stmt, ok := program.Statements[0].(*ast.ExpressionStatement)
+
+	if !ok {
+		t.Fatalf("program.Statements[0] is not ast.ExpressionStatement. got=%t", program.Statements[0])
+	}
+
+	exp, ok := stmt.Expression.(*ast.RepeteExpression)
+
+	if !ok {
+		t.Fatalf("stmt.Expression is not ast.RepeteExpression. got=%T", stmt.Expression)
+	}
+
+	if exp.From.Name.Value != "i" {
+		t.Fatalf("exp.From.Name.Value has wrong identifier name. expected=%s got=%s", "i", "i")
+	}
+
+	if !testInfixExpression(t, exp.Condition, "0", "<", "10") {
+		return
+	}
+
+	if len(exp.Body.Statements) != 1 {
+		t.Fatalf("exp.Body.Statements is not 1 statements. got=%d", len(exp.Body.Statements))
+	}
+
+	body, ok := exp.Body.Statements[0].(*ast.ExpressionStatement)
+
+	if !ok {
+		t.Fatalf("exp.Body.Statements[0] is not ast.ExpressionStatement. got=%T", exp.Body.Statements[0])
+	}
+
+	if !testIdentifier(t, body.Expression, "i") {
+		return
+	}
+
+}
+
 func testIntegerLiteral(t *testing.T, il ast.Expression, value interface{}) bool {
 	integ, ok := il.(*ast.IntegerLiteral)
 	if !ok {
