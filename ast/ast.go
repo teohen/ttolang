@@ -359,9 +359,11 @@ func (ie *IndexExpression) String() string {
 
 type RepeteExpression struct {
 	Token     token.Token
-	Ident     Identifier
+	Ident     *CriaStatement
+	StarVal   Expression
+	EndVal    Expression
 	Condition Expression
-	Body      BlockStatement
+	Body      *BlockStatement
 }
 
 func (rp *RepeteExpression) expressionNode() {}

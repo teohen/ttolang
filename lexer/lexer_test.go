@@ -31,7 +31,7 @@ func TestNextToken(t *testing.T) {
 	"foo bar"
 	[1, 2];
 
-	repete(i de 0 ate 10){
+	repete(i; de 0 ate 10){
 		i
 	}
 	`
@@ -123,6 +123,7 @@ func TestNextToken(t *testing.T) {
 		{token.LOOP, "repete"},
 		{token.LPAREN, "("},
 		{token.IDENT, "i"},
+		{token.SEMICOLON, ";"},
 		{token.FROM, "de"},
 		{token.INT, "0"},
 		{token.TO, "ate"},

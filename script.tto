@@ -13,3 +13,8 @@ cria calc_tempo <- proc(ano_inicial, ano_atual) {
 
 cria resultado <- calc_tempo(ano_nasc, ano_hoje);
 mostra(resultado);
+
+
+
+proposta para o loop
+// repete (cria i <- 0; sobe 1; ate i < 9) 

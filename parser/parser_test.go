@@ -708,13 +708,14 @@ func TestParsingIndexExpressions(t *testing.T) {
 
 func TestRepeteExpression(t *testing.T) {
 	input := `
-		repete (i <- 0 ate 9) {
+		repete (i; de 0 ate 9) {
 			i
-		};
+		}
 		`
 
 	l := lexer.New(input)
 	p := New(l)
+
 	program := p.ParseProgram()
 	checkParserErrors(t, p)
 
@@ -734,22 +735,60 @@ func TestRepeteExpression(t *testing.T) {
 		t.Fatalf("stmt.Expression is not ast.RepeteExpression. got=%T", stmt.Expression)
 	}
 
-	if exp.From.Name.Value != "i" {
-		t.Fatalf("exp.From.Name.Value has wrong identifier name. expected=%s got=%s", "i", "i")
+	if exp.Ident.Name.Value != "i" {
+		t.Fatalf("exp.Ident.Value has wrong identifier value. expected=%s got=%s", "i", "i")
 	}
 
-	if !testInfixExpression(t, exp.Condition, "0", "<", "10") {
+	identifier, ok := exp.Ident.Value.(ast.Expression)
+
+	if !ok {
+		t.Fatalf("exp.Ident.Value is not an ast.IntegerLiteral. got=%T", exp.Ident.Value)
+	}
+
+	if !testLiteralExpression(t, identifier, 0) {
+		return
+	}
+
+	starValue, ok := exp.StarVal.(ast.Expression)
+
+	if !ok {
+		t.Fatalf("exp.StarVal is not an ast.Expression. got=%T", exp.StarVal)
+		return
+	}
+
+	if !testLiteralExpression(t, starValue, 0) {
+		return
+	}
+
+	endVal, ok := exp.EndVal.(ast.Expression)
+
+	if !ok {
+		t.Fatalf("exp.EndVal is not an ast.Expression. got=%T", exp.EndVal)
+		return
+	}
+
+	if !testLiteralExpression(t, endVal, 9) {
+		return
+	}
+
+	condition, ok := exp.Condition.(ast.Expression)
+
+	if !ok {
+		t.Fatalf("exp.Condition is not an ast.Expression. got=%T", exp.Condition)
+	}
+
+	if !testInfixExpression(t, condition, 9, "=", 9) {
 		return
 	}
 
 	if len(exp.Body.Statements) != 1 {
-		t.Fatalf("exp.Body.Statements is not 1 statements. got=%d", len(exp.Body.Statements))
+		t.Errorf("exp.Body does not have 1 statement. got=%d", len(exp.Body.Statements))
 	}
 
 	body, ok := exp.Body.Statements[0].(*ast.ExpressionStatement)
 
 	if !ok {
-		t.Fatalf("exp.Body.Statements[0] is not ast.ExpressionStatement. got=%T", exp.Body.Statements[0])
+		t.Errorf("exp.Body.Statements[0] is not ast.ExpressionStatement. got=%T", exp.Body.Statements[0])
 	}
 
 	if !testIdentifier(t, body.Expression, "i") {
