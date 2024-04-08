@@ -416,6 +416,21 @@ func TestIndexExpressions(t *testing.T) {
 		}
 	}
 }
+
+func TestAssignStatements(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected int64
+	}{
+		{"cria a <- 0; a <- 5 + 5; a;", 10},
+		{"cria a <- 3; cria b <- 2;  a <- a + b; a;", 5},
+		{"cria i <- 0; i <- i + 1; i", 1},
+	}
+	for _, tt := range tests {
+		testIntegerObject(t, testEval(tt.input), tt.expected)
+	}
+}
+
 func testNullObject(t *testing.T, obj object.Object) bool {
 	if obj != NULL {
 		t.Errorf("object is not NULL. got=%T (%v)", obj, obj)
@@ -434,14 +449,14 @@ func testEval(input string) object.Object {
 }
 
 func testIntegerObject(t *testing.T, obj object.Object, expected int64) bool {
-	restul, ok := obj.(*object.Integer)
+	result, ok := obj.(*object.Integer)
 	if !ok {
-		t.Errorf("object is not integer. got=%d, want=%d", restul.Value, expected)
+		t.Errorf("object is not integer. got=%d, want=%d", result.Value, expected)
 		return false
 	}
 
-	if restul.Value != expected {
-		t.Errorf("object has wrong value. got=%d, want=%d", restul.Value, expected)
+	if result.Value != expected {
+		t.Errorf("object has wrong value. got=%d, want=%d", result.Value, expected)
 		return false
 	}
 

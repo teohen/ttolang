@@ -145,12 +145,13 @@ func (p *Parser) ParseProgram() *ast.Program {
 
 func (p *Parser) parseStatement() ast.Statement {
 
-	switch p.curToken.Type {
-	case token.LET:
+	if p.curToken.Type == token.LET {
 		return p.parseCriaStatement()
-	case token.RETURN:
+	} else if p.curToken.Type == token.RETURN {
 		return p.parseDevolveStatement()
-	default:
+	} else if p.curToken.Type == token.IDENT && p.peekToken.Type == token.ASSIGN {
+		return p.parseAssignStatement()
+	} else {
 		return p.parseExpressionStatement()
 	}
 }
@@ -490,4 +491,24 @@ func (p *Parser) parseIndexExpression(left ast.Expression) ast.Expression {
 	}
 
 	return exp
+}
+func (p *Parser) parseAssignStatement() *ast.AssignStatement {
+	sttm := &ast.AssignStatement{Token: p.curToken}
+
+	sttm.Name = &ast.Identifier{Token: p.curToken, Value: p.curToken.Literal}
+
+	if !p.expectPeek(token.ASSIGN) {
+		return nil
+	}
+
+	p.nextToken()
+
+	sttm.AssignExpression = p.parseExpression(LOWEST)
+
+	if p.peekTokenIs(token.SEMICOLON) {
+		p.nextToken()
+	}
+
+	return sttm
+
 }

@@ -356,3 +356,28 @@ func (ie *IndexExpression) String() string {
 	out.WriteString("])")
 	return out.String()
 }
+
+type AssignStatement struct {
+	Token            token.Token
+	Name             *Identifier
+	AssignExpression Expression
+}
+
+func (cs *AssignStatement) statementNode() {}
+func (cs *AssignStatement) TokenLiteral() string {
+	return cs.Token.Literal
+}
+
+func (cs *AssignStatement) String() string {
+	var out bytes.Buffer
+
+	out.WriteString(cs.Name.String())
+	out.WriteString(" <- ")
+
+	if cs.AssignExpression != nil {
+		out.WriteString(cs.AssignExpression.String())
+	}
+
+	out.WriteString(";")
+	return out.String()
+}
