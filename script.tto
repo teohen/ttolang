@@ -1,8 +1,12 @@
-cria cod <- 3;
+cria idade <- 0;
 
-se (cod < 3 = !falso) 
+idade <- 29;
+
+se (idade < 18) 
 {
     mostra("menor");
-}senao {
+} senao {
     mostra("maior")
-};
+}
+
+idade;
