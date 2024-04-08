@@ -103,6 +103,14 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 
 	case *ast.StringLiteral:
 		return &object.String{Value: node.Value}
+
+	case *ast.AssignStatement:
+		val := Eval(node.AssignExpression, env)
+		if isError(val) {
+			return val
+		}
+
+		env.Set(node.Name.Value, val)
 	}
 
 	return nil

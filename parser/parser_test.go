@@ -706,6 +706,62 @@ func TestParsingIndexExpressions(t *testing.T) {
 
 }
 
+func TestAssignStatements(t *testing.T) {
+	tests := []struct {
+		input              string
+		expectedIdentifier string
+		expectedValue      interface{}
+		expectedRight      interface{}
+		expectedLeft       interface{}
+	}{
+		{"any <- 3 + 3;", "any", 6, 3, 3},
+	}
+
+	for _, tt := range tests {
+		l := lexer.New(tt.input)
+		p := New(l)
+		program := p.ParseProgram()
+
+		checkParserErrors(t, p)
+
+		if len(program.Statements) != 1 {
+			t.Fatalf("program.Statements does not contain 1 statements. got=%d", len(program.Statements))
+		}
+
+		stmt := program.Statements[0]
+
+		if !testAssignStatement(t, stmt, tt.expectedIdentifier) {
+			return
+		}
+
+		assignSttm := stmt.(*ast.AssignStatement)
+
+		if !testIdentifier(t, assignSttm.Name, "any") {
+			return
+		}
+
+		if !testInfixExpression(t, assignSttm.AssignExpression, tt.expectedLeft, "+", tt.expectedRight) {
+			return
+		}
+
+	}
+}
+
+func testAssignStatement(t *testing.T, s ast.Statement, name string) bool {
+	assignSttm, ok := s.(*ast.AssignStatement)
+
+	if !ok {
+		t.Errorf("s not *ast.AssignStatement. got=%T", s)
+		return false
+	}
+
+	if assignSttm.Name.Value != name {
+		t.Errorf("assignSttm.Name.Value not '%s', got=%s", name, assignSttm.Name.Value)
+		return false
+	}
+	return true
+}
+
 func testIntegerLiteral(t *testing.T, il ast.Expression, value interface{}) bool {
 	integ, ok := il.(*ast.IntegerLiteral)
 	if !ok {

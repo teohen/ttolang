@@ -30,6 +30,9 @@ func TestNextToken(t *testing.T) {
 	"foobar"
 	"foo bar"
 	[1, 2];
+
+	cria i <- 1;
+	i <- i + 1;
 	`
 
 	tests := []struct {
@@ -115,6 +118,17 @@ func TestNextToken(t *testing.T) {
 		{token.COMMA, ","},
 		{token.INT, "2"},
 		{token.RBRACKET, "]"},
+		{token.SEMICOLON, ";"},
+		{token.LET, "cria"},
+		{token.IDENT, "i"},
+		{token.ASSIGN, "<-"},
+		{token.INT, "1"},
+		{token.SEMICOLON, ";"},
+		{token.IDENT, "i"},
+		{token.ASSIGN, "<-"},
+		{token.IDENT, "i"},
+		{token.PLUS, "+"},
+		{token.INT, "1"},
 		{token.SEMICOLON, ";"},
 		{token.EOF, ""},
 	}
