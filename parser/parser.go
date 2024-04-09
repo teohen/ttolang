@@ -146,12 +146,13 @@ func (p *Parser) ParseProgram() *ast.Program {
 
 func (p *Parser) parseStatement() ast.Statement {
 
-	switch p.curToken.Type {
-	case token.LET:
+	if p.curToken.Type == token.LET {
 		return p.parseCriaStatement()
-	case token.RETURN:
+	} else if p.curToken.Type == token.RETURN {
 		return p.parseDevolveStatement()
-	default:
+	} else if p.curToken.Type == token.IDENT && p.peekToken.Type == token.ASSIGN {
+		return p.parseAssignStatement()
+	} else {
 		return p.parseExpressionStatement()
 	}
 }
@@ -492,60 +493,23 @@ func (p *Parser) parseIndexExpression(left ast.Expression) ast.Expression {
 
 	return exp
 }
+func (p *Parser) parseAssignStatement() *ast.AssignStatement {
+	sttm := &ast.AssignStatement{Token: p.curToken}
 
-func (p *Parser) parseRepeteIdentifier() *ast.CriaStatement {
-	stmt := &ast.CriaStatement{Token: p.curToken}
+	sttm.Name = &ast.Identifier{Token: p.curToken, Value: p.curToken.Literal}
 
-	stmt.Name = &ast.Identifier{Token: p.curToken, Value: p.curToken.Literal}
-
-	if !p.expectPeek(token.SEMICOLON) {
-		return nil
-	}
-
-	if !p.expectPeek(token.FROM) {
+	if !p.expectPeek(token.ASSIGN) {
 		return nil
 	}
 
 	p.nextToken()
 
-	stmt.Value = p.parseExpression(LOWEST)
+	sttm.AssignExpression = p.parseExpression(LOWEST)
 
-	if p.peekTokenIs(token.TO) {
+	if p.peekTokenIs(token.SEMICOLON) {
 		p.nextToken()
 	}
 
-	return stmt
+	return sttm
 
-}
-
-func (p *Parser) parseRepeteExpression() ast.Expression {
-	// trocar a repeticao
-	// talvez trocar a semantica
-
-	expression := &ast.RepeteExpression{Token: p.curToken}
-
-	if !p.expectPeek(token.LPAREN) {
-		return nil
-	}
-
-	p.nextToken()
-	expression.Ident = p.parseRepeteIdentifier()
-	expression.StarVal = expression.Ident.Value
-
-	p.nextToken()
-
-	expression.EndVal = p.parseExpression(LOWEST)
-	expression.Condition = p.parseExpression(LOWEST)
-
-	if !p.expectPeek(token.RPAREN) {
-		return nil
-	}
-
-	if !p.expectPeek(token.LBRACE) {
-		return nil
-	}
-
-	expression.Body = p.parseBlockStatement()
-
-	return expression
 }

@@ -357,29 +357,27 @@ func (ie *IndexExpression) String() string {
 	return out.String()
 }
 
-type RepeteExpression struct {
-	Token     token.Token
-	Ident     *CriaStatement
-	StarVal   Expression
-	EndVal    Expression
-	Condition Expression
-	Body      *BlockStatement
+type AssignStatement struct {
+	Token            token.Token
+	Name             *Identifier
+	AssignExpression Expression
 }
 
-func (rp *RepeteExpression) expressionNode() {}
-func (rp *RepeteExpression) TokenLiteral() string {
-	return rp.Token.Literal
+func (cs *AssignStatement) statementNode() {}
+func (cs *AssignStatement) TokenLiteral() string {
+	return cs.Token.Literal
 }
-func (rp *RepeteExpression) String() string {
+
+func (cs *AssignStatement) String() string {
 	var out bytes.Buffer
 
-	out.WriteString("Repete")
-	out.WriteString("( ")
-	out.WriteString(rp.Ident.String())
-	out.WriteString(rp.Condition.String())
-	out.WriteString(")")
-	out.WriteString(rp.Body.String())
+	out.WriteString(cs.Name.String())
+	out.WriteString(" <- ")
 
+	if cs.AssignExpression != nil {
+		out.WriteString(cs.AssignExpression.String())
+	}
+
+	out.WriteString(";")
 	return out.String()
-
 }

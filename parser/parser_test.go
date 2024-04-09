@@ -706,95 +706,60 @@ func TestParsingIndexExpressions(t *testing.T) {
 
 }
 
-func TestRepeteExpression(t *testing.T) {
-	input := `
-		repete (i; de 0 ate 9) {
-			i
+func TestAssignStatements(t *testing.T) {
+	tests := []struct {
+		input              string
+		expectedIdentifier string
+		expectedValue      interface{}
+		expectedRight      interface{}
+		expectedLeft       interface{}
+	}{
+		{"any <- 3 + 3;", "any", 6, 3, 3},
+	}
+
+	for _, tt := range tests {
+		l := lexer.New(tt.input)
+		p := New(l)
+		program := p.ParseProgram()
+
+		checkParserErrors(t, p)
+
+		if len(program.Statements) != 1 {
+			t.Fatalf("program.Statements does not contain 1 statements. got=%d", len(program.Statements))
 		}
-		`
 
-	l := lexer.New(input)
-	p := New(l)
+		stmt := program.Statements[0]
 
-	program := p.ParseProgram()
-	checkParserErrors(t, p)
+		if !testAssignStatement(t, stmt, tt.expectedIdentifier) {
+			return
+		}
 
-	if len(program.Statements) != 1 {
-		t.Fatalf("program.body does not contain %d statements. got=%d\n", 1, len(program.Statements))
+		assignSttm := stmt.(*ast.AssignStatement)
+
+		if !testIdentifier(t, assignSttm.Name, "any") {
+			return
+		}
+
+		if !testInfixExpression(t, assignSttm.AssignExpression, tt.expectedLeft, "+", tt.expectedRight) {
+			return
+		}
+
 	}
+}
 
-	stmt, ok := program.Statements[0].(*ast.ExpressionStatement)
+func testAssignStatement(t *testing.T, s ast.Statement, name string) bool {
+	assignSttm, ok := s.(*ast.AssignStatement)
 
 	if !ok {
-		t.Fatalf("program.Statements[0] is not ast.ExpressionStatement. got=%t", program.Statements[0])
+		t.Errorf("s not *ast.AssignStatement. got=%T", s)
+		return false
 	}
 
-	exp, ok := stmt.Expression.(*ast.RepeteExpression)
-
-	if !ok {
-		t.Fatalf("stmt.Expression is not ast.RepeteExpression. got=%T", stmt.Expression)
+	if assignSttm.Name.Value != name {
+		t.Errorf("assignSttm.Name.Value not '%s', got=%s", name, assignSttm.Name.Value)
+		return false
 	}
-
-	if exp.Ident.Name.Value != "i" {
-		t.Fatalf("exp.Ident.Value has wrong identifier value. expected=%s got=%s", "i", "i")
-	}
-
-	identifier, ok := exp.Ident.Value.(ast.Expression)
-
-	if !ok {
-		t.Fatalf("exp.Ident.Value is not an ast.IntegerLiteral. got=%T", exp.Ident.Value)
-	}
-
-	if !testLiteralExpression(t, identifier, 0) {
-		return
-	}
-
-	starValue, ok := exp.StarVal.(ast.Expression)
-
-	if !ok {
-		t.Fatalf("exp.StarVal is not an ast.Expression. got=%T", exp.StarVal)
-		return
-	}
-
-	if !testLiteralExpression(t, starValue, 0) {
-		return
-	}
-
-	endVal, ok := exp.EndVal.(ast.Expression)
-
-	if !ok {
-		t.Fatalf("exp.EndVal is not an ast.Expression. got=%T", exp.EndVal)
-		return
-	}
-
-	if !testLiteralExpression(t, endVal, 9) {
-		return
-	}
-
-	condition, ok := exp.Condition.(ast.Expression)
-
-	if !ok {
-		t.Fatalf("exp.Condition is not an ast.Expression. got=%T", exp.Condition)
-	}
-
-	if !testInfixExpression(t, condition, 9, "=", 9) {
-		return
-	}
-
-	if len(exp.Body.Statements) != 1 {
-		t.Errorf("exp.Body does not have 1 statement. got=%d", len(exp.Body.Statements))
-	}
-
-	body, ok := exp.Body.Statements[0].(*ast.ExpressionStatement)
-
-	if !ok {
-		t.Errorf("exp.Body.Statements[0] is not ast.ExpressionStatement. got=%T", exp.Body.Statements[0])
-	}
-
-	if !testIdentifier(t, body.Expression, "i") {
-		return
-	}
-
+	return true
 }
 
 func testIntegerLiteral(t *testing.T, il ast.Expression, value interface{}) bool {
