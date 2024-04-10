@@ -33,6 +33,10 @@ func TestNextToken(t *testing.T) {
 
 	cria i <- 1;
 	i <- i + 1;
+
+	repete(i <- i + 1 ate i < 10) {
+		i;
+	}
 	`
 
 	tests := []struct {
@@ -130,6 +134,23 @@ func TestNextToken(t *testing.T) {
 		{token.PLUS, "+"},
 		{token.INT, "1"},
 		{token.SEMICOLON, ";"},
+		{token.LOOP, "repete"},
+		{token.LPAREN, "("},
+		{token.IDENT, "i"},
+		{token.ASSIGN, "<-"},
+		{token.IDENT, "i"},
+		{token.PLUS, "+"},
+		{token.INT, "1"},
+		{token.TO, "ate"},
+		{token.IDENT, "i"},
+		{token.LT, "<"},
+		{token.INT, "10"},
+		{token.RPAREN, ")"},
+		{token.LBRACE, "{"},
+		{token.IDENT, "i"},
+		{token.SEMICOLON, ";"},
+		{token.RBRACE, "}"},
+
 		{token.EOF, ""},
 	}
 

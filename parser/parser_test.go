@@ -747,6 +747,56 @@ func TestAssignStatements(t *testing.T) {
 	}
 }
 
+func TestRepeteExpression(t *testing.T) {
+	input := `repete(i <- i + 1 ate i < 10){
+				i;
+			  }`
+
+	l := lexer.New(input)
+	p := New(l)
+	program := p.ParseProgram()
+	checkParserErrors(t, p)
+
+	if len(program.Statements) != 1 {
+		t.Fatalf("program.body does not contain %d statements. got=%d\n", 1, len(program.Statements))
+	}
+
+	stmt, ok := program.Statements[0].(*ast.ExpressionStatement)
+
+	if !ok {
+		t.Fatalf("program.Statements[0] is not ast.ExpressionStatement. got=%t", program.Statements[0])
+	}
+
+	exp, ok := stmt.Expression.(*ast.RepeteExpression)
+
+	if !ok {
+		t.Fatalf("stmt.Expression is not ast.RepeteExpression. got=%T", stmt.Expression)
+	}
+
+	if !testAssignStatement(t, exp.Step, "i") {
+		return
+	}
+
+	if !testInfixExpression(t, exp.Condition, "i", "<", 10) {
+		return
+	}
+
+	if len(exp.RepeatingStatements.Statements) != 1 {
+		t.Errorf("RepeatingStatements is not 1 statements. got=%d\n", len(exp.RepeatingStatements.Statements))
+	}
+
+	repeatingStatement, ok := exp.RepeatingStatements.Statements[0].(*ast.ExpressionStatement)
+
+	if !ok {
+		t.Fatalf("exp.RepeatingStatement.Statements[0] is not ast.ExpressionStatement. got=%T", exp.RepeatingStatements.Statements[0])
+	}
+
+	if !testIdentifier(t, repeatingStatement.Expression, "i") {
+		return
+	}
+
+}
+
 func testAssignStatement(t *testing.T, s ast.Statement, name string) bool {
 	assignSttm, ok := s.(*ast.AssignStatement)
 

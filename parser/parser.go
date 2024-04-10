@@ -151,7 +151,7 @@ func (p *Parser) parseStatement() ast.Statement {
 	} else if p.curToken.Type == token.RETURN {
 		return p.parseDevolveStatement()
 	} else if p.curToken.Type == token.IDENT && p.peekToken.Type == token.ASSIGN {
-		return p.parseAssignStatement()
+		return p.parseAssignStatement(token.SEMICOLON)
 	} else {
 		return p.parseExpressionStatement()
 	}
@@ -493,7 +493,7 @@ func (p *Parser) parseIndexExpression(left ast.Expression) ast.Expression {
 
 	return exp
 }
-func (p *Parser) parseAssignStatement() *ast.AssignStatement {
+func (p *Parser) parseAssignStatement(endExpressionToken token.TokenType) *ast.AssignStatement {
 	sttm := &ast.AssignStatement{Token: p.curToken}
 
 	sttm.Name = &ast.Identifier{Token: p.curToken, Value: p.curToken.Literal}
@@ -506,10 +506,39 @@ func (p *Parser) parseAssignStatement() *ast.AssignStatement {
 
 	sttm.AssignExpression = p.parseExpression(LOWEST)
 
-	if p.peekTokenIs(token.SEMICOLON) {
+	if p.peekTokenIs(endExpressionToken) {
 		p.nextToken()
 	}
 
 	return sttm
+}
+
+func (p *Parser) parseRepeteExpression() ast.Expression {
+
+	expression := &ast.RepeteExpression{Token: p.curToken}
+
+	if !p.expectPeek(token.LPAREN) {
+		return nil
+	}
+
+	p.nextToken()
+
+	expression.Step = p.parseAssignStatement(token.TO)
+
+	p.nextToken()
+
+	expression.Condition = p.parseExpression(LOWEST)
+
+	if !p.expectPeek(token.RPAREN) {
+		return nil
+	}
+
+	if !p.expectPeek(token.LBRACE) {
+		return nil
+	}
+
+	expression.RepeatingStatements = p.parseBlockStatement()
+
+	return expression
 
 }

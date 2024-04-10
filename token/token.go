@@ -55,7 +55,6 @@ var keywords = map[string]TokenType{
 	"senao":   ELSE,
 	"devolve": RETURN,
 	"repete":  LOOP,
-	"de":      FROM,
 	"ate":     TO,
 }
 

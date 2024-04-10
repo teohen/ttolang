@@ -105,12 +105,49 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		return &object.String{Value: node.Value}
 
 	case *ast.AssignStatement:
+
 		val := Eval(node.AssignExpression, env)
 		if isError(val) {
 			return val
 		}
 
 		env.Set(node.Name.Value, val)
+		return val
+
+	case *ast.RepeteExpression:
+
+		shouldLoop := false
+
+		conditional := Eval(node.Condition, env)
+		newEnv := object.NewEnclosedEnvironment(env)
+
+		shouldLoop = !isTruthy(conditional)
+		for shouldLoop {
+
+			_ = Eval(node.RepeatingStatements, newEnv)
+
+			val := Eval(node.Step, env)
+
+			newEnv.Set(node.Step.Name.Value, val)
+			env.Set(node.Step.Name.Value, val)
+
+			conditionalEnv := Eval(node.Condition, env)
+			conditionalNewEnv := Eval(node.Condition, newEnv)
+
+			shouldLoop = !isTruthy(conditionalNewEnv)
+			if shouldLoop == true {
+				shouldLoop = !isTruthy(conditionalEnv)
+			}
+		}
+
+		for key, value := range newEnv.GetStore() {
+			_, ok := env.Get(key)
+
+			if ok {
+				env.Set(key, value)
+			}
+		}
+
 	}
 
 	return nil

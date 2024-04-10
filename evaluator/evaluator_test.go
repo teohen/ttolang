@@ -88,7 +88,7 @@ func TestBangOperator(t *testing.T) {
 	}
 }
 
-func TestIfElseExpressions(t *testing.T) {
+func TestSeSenaoExpressions(t *testing.T) {
 	tests := []struct {
 		input    string
 		expected interface{}
@@ -428,6 +428,29 @@ func TestAssignStatements(t *testing.T) {
 	}
 	for _, tt := range tests {
 		testIntegerObject(t, testEval(tt.input), tt.expected)
+	}
+}
+
+func TestRepeteExpression(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected int64
+	}{
+		{"cria i <- 0; cria res <- 0; repete(i <- i + 1 ate i > 9) {res <- i;}res;", 9},
+		{"cria i <- 0; cria res <- 0; repete(i <- i + 1 ate res > 0) {se (i > 5) {res <- 1}}res;", 1},
+	}
+	for _, tt := range tests {
+		testIntegerObject(t, testEval(tt.input), tt.expected)
+	}
+
+	newEnvironmentTest := "cria i <- 0; repete(i <- i + 1 ate i > 9) {cria res <- 3}res;"
+
+	invalidEnvironmentEval := testEval(newEnvironmentTest)
+
+	problem := "Problema: identificador é desconhecido: res"
+
+	if invalidEnvironmentEval.Inspect() != problem {
+		t.Fatalf("The error was not '%s'. Got=%s", problem, invalidEnvironmentEval.Inspect())
 	}
 }
 

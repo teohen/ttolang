@@ -107,6 +107,7 @@ func (e *Environment) Get(name string) (Object, bool) {
 
 	if !ok && e.outer != nil {
 		obj, ok = e.outer.Get(name)
+
 	}
 	return obj, ok
 }
@@ -114,6 +115,10 @@ func (e *Environment) Get(name string) (Object, bool) {
 func (e *Environment) Set(name string, val Object) Object {
 	e.store[name] = val
 	return val
+}
+
+func (e *Environment) GetStore() map[string]Object {
+	return e.store
 }
 
 type Proc struct {

@@ -381,3 +381,32 @@ func (cs *AssignStatement) String() string {
 	out.WriteString(";")
 	return out.String()
 }
+
+type RepeteExpression struct {
+	Token               token.Token
+	Step                *AssignStatement
+	Condition           Expression
+	RepeatingStatements *BlockStatement
+}
+
+func (re *RepeteExpression) expressionNode() {}
+func (re *RepeteExpression) TokenLiteral() string {
+	return re.Token.Literal
+}
+
+func (re *RepeteExpression) String() string {
+	var out bytes.Buffer
+
+	out.WriteString("repete( ")
+
+	out.WriteString(re.Step.String())
+
+	out.WriteString("ate ")
+
+	out.WriteString(re.Condition.String())
+
+	out.WriteString(re.RepeatingStatements.String())
+
+	out.WriteString(";")
+	return out.String()
+}
