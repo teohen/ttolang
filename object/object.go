@@ -107,13 +107,21 @@ func (e *Environment) Get(name string) (Object, bool) {
 
 	if !ok && e.outer != nil {
 		obj, ok = e.outer.Get(name)
-
 	}
 	return obj, ok
 }
 
 func (e *Environment) Set(name string, val Object) Object {
+	if e.outer != nil {
+		_, existsOnOuter := e.outer.Get(name)
+
+		if existsOnOuter {
+			e.outer.Set(name, val)
+			return val
+		}
+	}
 	e.store[name] = val
+
 	return val
 }
 
