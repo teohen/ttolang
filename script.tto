@@ -10,3 +10,12 @@ se (idade < 18)
 }
 
 idade;
+
+
+cria i <- 0;
+cria res <- 0;
+
+repete(i <- i + 1 ate (i / 20 = 1)) {
+        mostra("ainda não");
+        i;
+}
