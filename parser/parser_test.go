@@ -794,7 +794,6 @@ func TestRepeteExpression(t *testing.T) {
 	if !testIdentifier(t, repeatingStatement.Expression, "i") {
 		return
 	}
-
 }
 
 func testAssignStatement(t *testing.T, s ast.Statement, name string) bool {

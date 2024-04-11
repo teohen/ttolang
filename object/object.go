@@ -125,10 +125,6 @@ func (e *Environment) Set(name string, val Object) Object {
 	return val
 }
 
-func (e *Environment) GetStore() map[string]Object {
-	return e.store
-}
-
 type Proc struct {
 	Parameters []*ast.Identifier
 	Body       *ast.BlockStatement

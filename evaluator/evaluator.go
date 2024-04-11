@@ -105,7 +105,6 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		return &object.String{Value: node.Value}
 
 	case *ast.AssignStatement:
-
 		val := Eval(node.AssignExpression, env)
 		if isError(val) {
 			return val

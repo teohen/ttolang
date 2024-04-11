@@ -37,7 +37,6 @@ const (
 	ELSE     = "SENAO"
 	RETURN   = "DEVOLVE"
 	LOOP     = "REPETE"
-	FROM     = "DE"
 	TO       = "ATE"
 
 	LT = "<"
