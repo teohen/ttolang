@@ -442,7 +442,6 @@ func TestRepeteExpression(t *testing.T) {
 	for _, tt := range tests {
 		testIntegerObject(t, testEval(tt.input), tt.expected)
 	}
-
 	newEnvironmentTest := "cria i <- 0; repete(i <- i + 1 ate i > 9) {cria res <- 3}res;"
 
 	invalidEnvironmentEval := testEval(newEnvironmentTest)
@@ -452,6 +451,22 @@ func TestRepeteExpression(t *testing.T) {
 	if invalidEnvironmentEval.Inspect() != problem {
 		t.Fatalf("The error was not '%s'. Got=%s", problem, invalidEnvironmentEval.Inspect())
 	}
+
+	inputNestedLoop :=
+		`
+		cria i <- 0;
+		cria j <- 0;
+		cria res <- 0;
+
+		repete(i <- i + 1 ate i > 3) {
+			j <- 0;
+			repete(j <- j + 1 ate j > 3) {
+				res <- res + 1;
+			}
+		}
+		res;
+	`
+	testIntegerObject(t, testEval(inputNestedLoop), 16)
 }
 
 func testNullObject(t *testing.T, obj object.Object) bool {
