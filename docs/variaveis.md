@@ -1,7 +1,7 @@
 ## Variáveis
 
-Variáveis em ttolang são declaradas com a palavra reservada "cria" e o símbolo de [atribuição](atribuição) "<-". 
-As variáveis podem armazenar [procedimentos](procedimentos) ou [tipos](tipos) básicos como [inteiros](inteiros), [booleanos](booleanos) e [strings](strings). 
+Variáveis em ttolang são declaradas com a palavra reservada "cria" e o símbolo de [atribuição](atribuição.md) "<-". 
+As variáveis podem armazenar [procedimentos](procedimentos.md) ou [tipos](tipos.md) básicos como [inteiros](inteiros.md), [booleanos](booleanos.md) e [strings](strings.md). 
 
 Exemplos de uso:
  ```

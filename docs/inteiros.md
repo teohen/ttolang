@@ -1,8 +1,8 @@
 ## Inteiros 
 
-Valores de [tipos](tipos) inteiros fazem parte da categoria dos [tipos](tipos) básicos em ttolang. Podem ser utilizados com os [operadores](operadores) disponíveis na linguagem. 
+Valores de [tipos](tipos.md) inteiros fazem parte da categoria dos [tipos](tipos.md) básicos em ttolang. Podem ser utilizados com os [operadores](operadores.md) disponíveis na linguagem. 
 
-Inteiros em ttolang estão em uma faixa de valores que vai de -9223372036854775808 até 9223372036854775807. Um valor que ultrapasse esses valores resultará em um [problema](problema). 
+Inteiros em ttolang estão em uma faixa de valores que vai de -9223372036854775808 até 9223372036854775807. Um valor que ultrapasse esses valores resultará em um [problema](problema.md). 
 
 Exemplos de uso:
  ```

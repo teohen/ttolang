@@ -1,7 +1,7 @@
-## [operadores](operadores) 
+## Operadores
 
-[Operadores](operadores) permitem realizar operações lógicas e matemáticas nos [tipos](tipos) existentes na ttolang. Alguns [operadores](operadores) somente podem ser utilizados em [tipo](tipos) específicos da ttolang. 
-Os [operadores](operadores) seguem a seguinte ordem de precedência em ttolang
+Operadores permitem realizar operações lógicas e matemáticas nos [tipos](tipos.md) existentes na ttolang. Alguns operadores somente podem ser utilizados em [tipo](tipos.md) específicos da ttolang. 
+Os Operadores seguem a seguinte ordem de precedência em ttolang
 
     1. IGUAL A, DIFERENTE DE
   	2. MAIOR QUE, MENOR QUE
@@ -9,26 +9,26 @@ Os [operadores](operadores) seguem a seguinte ordem de precedência em ttolang
   	4. MULTIPLICAÇÃO, DIVISÃO
   	5. NEGAÇÃO
 
-Os [operadores](operadores) existentes na ttolang são representados por símbolos e estão dividos em duas categorias: matemáticos e lógicos.
+Os Operadores existentes na ttolang são representados por símbolos e estão dividos em duas categorias: matemáticos e lógicos.
 1. Matemáticos
-    1. Os [operadores](operadores) matemáticos podem ser utilizados em operações interfixadas e podem ser aplicados aos [tipos](tipos) matemáticos: [inteiros](inteiros).
-    2. Lista dos [operadores](operadores):
+    1. Os Operadores matemáticos podem ser utilizados em operações interfixadas e podem ser aplicados aos [tipos](tipos.md) matemáticos: [inteiros](inteiros.md).
+    2. Lista dos Operadores:
         1. \+ (SOMA)
         2. \- (SUBTRAÇÃO)
         3. \* (MULTIPLICAÇÃO)
         4. / (DIVISÃO)
 2. Lógicos
-    1. Os [operadores](operadores) lógicos poder ser utilizados em operações interfixadas e pré-fixadas que podem ser aplicadas aos [tipos](tipos) [inteiro](inteiros)* e [booleano](booleanos). 
-    2. Lista dos [operadores](operadores):
+    1. Os Operadores lógicos poder ser utilizados em operações interfixadas e pré-fixadas que podem ser aplicadas aos [tipos](tipos.md) [inteiro](inteiros.md)* e [booleano](booleanos.md). 
+    2. Lista dos Operadores:
         1. \> (MAIOR QUE)
         2. < (MENOR QUE)
         3. = (IGUAL A)
         4. != (DIFERENTE DE)
         5. ! (NEGAÇÃO)
 
-OBS1: alguns [operadores](operadores) lógicos não podem ser utilizados com alguns [tipos](tipos) específicos. Por exemplo, o [operador](operadores) lógico de NEGAÇÃO (!) não pode ser utilizado com o [tipo](tipos) [inteiro](inteiros). Ao contrário do [operador](operadores) lógico MAIOR QUE (>) pode ser utilizado com o [tipo](tipos) [inteiro](inteiros).
+OBS1: alguns operadores lógicos não podem ser utilizados com alguns [tipos](tipos.md) específicos. Por exemplo, o operador lógico de NEGAÇÃO (!) não pode ser utilizado com o [tipo](tipos.md) [inteiro](inteiros.md). Ao contrário do operador lógico MAIOR QUE (>) pode ser utilizado com o [tipo](tipos.md) [inteiro](inteiros.md).
 
-OBS2: Se o [operador](operadores) DIVISÃO (/) for utilizado em uma operação onde o valor 0 (zero) é o dividendo da operação, o interpretador resultará em um [problema](problema).
+OBS2: Se o operador (/) DIVISÃO  for utilizado em uma operação onde o valor 0 (zero) é o dividendo da operação, o interpretador resultará em um [problema](problema.md).
 
 Exemplos de uso:
  ```
