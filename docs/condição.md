@@ -1,0 +1,3 @@
+## Condição
+
+DOC CONDIÇÃO
