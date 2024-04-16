@@ -183,9 +183,9 @@ func evalInfixExpression(operator string, left, right object.Object) object.Obje
 	switch {
 	case left.Type() == object.INTEGER_OBJ && right.Type() == object.INTEGER_OBJ:
 		return evalIntegerInfixExpression(operator, left, right)
-	case operator == "=":
+	case operator == "=" && left.Type() == object.BOOLEAN_OBJ && right.Type() == object.BOOLEAN_OBJ:
 		return nativeBoolToBooleanObject(left == right)
-	case operator == "!=":
+	case operator == "!=" && left.Type() == object.BOOLEAN_OBJ && right.Type() == object.BOOLEAN_OBJ:
 		return nativeBoolToBooleanObject(left != right)
 	case left.Type() != right.Type():
 		return newError("tipos diferentes: %s %s %s", left.Type(), operator, right.Type())
@@ -346,7 +346,9 @@ func unwrapDevolveValue(obj object.Object) object.Object {
 }
 
 func evalStringInfixExpression(operator string, left, right object.Object) object.Object {
-	if operator != "+" {
+	if operator == "=" {
+		return TRUE
+	} else if operator != "+" {
 		return newError("operador desconhecido: %s %s %s", left.Type(), operator, right.Type())
 	}
 
