@@ -35,11 +35,11 @@ var builtins = map[string]*object.Builtin{
 			}
 
 			arr := args[0].(*object.Lista)
-			lenght := len(arr.Elements)
+			length := len(arr.Elements)
 
-			newElements := make([]object.Object, lenght+1)
+			newElements := make([]object.Object, length+1)
 			copy(newElements, arr.Elements)
-			newElements[lenght] = args[1]
+			newElements[length] = args[1]
 
 			return &object.Lista{Elements: newElements}
 		},
