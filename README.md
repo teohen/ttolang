@@ -15,7 +15,7 @@ Uma linguagem interpretada, tipada dinamicamente e super divertida criada por mi
 - [procedimentos: primeira classe e higher order](docs/procedimentos.md#procedimentos-primeira-classe-e-ordem-superior)
 - [procedimentos integrados](docs/procedimentos.md#procedimentos-integrados)
 - [closures](docs/closures.md)
-- [condição](docs/condição.md)
+- [seleção](docs/seleção.md)
 - [Estrutura de dados: lista](docs/lista.md)
 - [repetição](docs/repetição.md)
 - [atribuição](docs/atribuição.md)

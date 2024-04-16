@@ -6,15 +6,15 @@ Palavra reservada: `REPETE`
 
 Estrutura:
 
-repete ([atribuição](atribuição.md) ate [condição](condição.md)) {
+repete ([atribuição](atribuição.md) ate [seleção](seleção.md)) {
 
   [expressões](expressões.md)
 
 }
 
 Essa estrutura é avaliada pelo interpretador na seguinte ordem:
-  1. Avalia a [condição](condição.md).
-      1. A [condição](condição.md) é verdadeira?
+  1. Avalia a [seleção](seleção.md).
+      1. A [seleção](seleção.md) é verdadeira?
           1. Se sim, ignora o loop
           2. Senão, entra no loop
   2. Dentro do loop
@@ -25,7 +25,7 @@ Essa estrutura é avaliada pelo interpretador na seguinte ordem:
       4. Repete o primeiro passo.
 
 Observação importante:
-  A execução do código no repete está condicionada a FALSIFICAÇÃO da [condição](condição.md). Ou seja, somente vai executar o código dentro do Repete se a [condição](condição.md) for FALSA.
+  A execução do código no repete está condicionada a FALSIFICAÇÃO da [seleção](seleção.md). Ou seja, somente vai executar o código dentro do Repete se a [seleção](seleção.md) for FALSA.
 
 
 
