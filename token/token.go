@@ -7,6 +7,7 @@ type Token struct {
 	Literal string
 }
 
+// TODO: Add the AND/OR operators
 const (
 	ILLEGAL   = "DESCONHECIDO"
 	EOF       = "FIM_DE_ARQUIVO"

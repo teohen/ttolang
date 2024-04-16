@@ -7,7 +7,7 @@ import (
 )
 
 var builtins = map[string]*object.Builtin{
-	"tam": &object.Builtin{
+	"tam": {
 		Fn: func(args ...object.Object) object.Object {
 			if len(args) != 1 {
 				return newError("quantidade errada de parametros. recebeu=%d, aceita=1", len(args))
@@ -23,7 +23,8 @@ var builtins = map[string]*object.Builtin{
 			}
 		},
 	},
-	"anexar": &object.Builtin{
+	// TODO: feat - append also string instancies
+	"anexar": {
 		Fn: func(args ...object.Object) object.Object {
 			if len(args) != 2 {
 				return newError("quantidade errada de parametros. recebeu=%d, aceita=2", len(args))
@@ -34,16 +35,16 @@ var builtins = map[string]*object.Builtin{
 			}
 
 			arr := args[0].(*object.Lista)
-			lenght := len(arr.Elements)
+			length := len(arr.Elements)
 
-			newElements := make([]object.Object, lenght+1)
+			newElements := make([]object.Object, length+1)
 			copy(newElements, arr.Elements)
-			newElements[lenght] = args[1]
+			newElements[length] = args[1]
 
 			return &object.Lista{Elements: newElements}
 		},
 	},
-	"mostra": &object.Builtin{
+	"mostra": {
 		Fn: func(args ...object.Object) object.Object {
 			for _, arg := range args {
 				fmt.Println(arg.Inspect())
