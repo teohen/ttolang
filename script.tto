@@ -1,0 +1,2 @@
+		cria nome <- "tto"; novo_nome <- anexar(nome, 3);novo_nome;
+

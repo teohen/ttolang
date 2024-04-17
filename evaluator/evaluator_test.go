@@ -470,6 +470,66 @@ func TestRepeteExpression(t *testing.T) {
 	testIntegerObject(t, testEval(inputNestedLoop), 16)
 }
 
+func TestAnexarBuiltinFunction(t *testing.T) {
+	error := object.Error{Message: "Problema: segundo parametro com tipo errado. Recebeu=INTEIRO, aceita=STRING"}
+	tests := []struct {
+		input    string
+		expected interface{}
+	}{
+		{"cria numeros <- [1, 2];novos_numeros <- anexar(numeros, 3)novos_numeros;", [3]int{1, 2, 3}},
+		{"cria nome <- \"tto\"; novo_nome <- anexar(nome, \"lang\")novo_nome;", "ttolang"},
+		{"cria nome <- \"tto\"; novo_nome <- anexar(nome, 3);novo_nome;", &error},
+	}
+
+	for _, tt := range tests {
+		evaluated := testEval(tt.input)
+
+		switch tt.expected.(type) {
+		case []int:
+			list, ok := evaluated.(*object.Lista)
+
+			if !ok {
+				t.Fatalf("expected to be evaluated to a *object.Lista. Got=%T", evaluated)
+			}
+
+			expectedList := tt.expected.([]int)
+
+			if len(list.Elements) != len(expectedList) {
+				t.Fatalf("list.Elements has wrong size. Expected=%d, got=%d", len(expectedList), len(list.Elements))
+			}
+
+			for i, item := range list.Elements {
+				testIntegerObject(t, item, int64(expectedList[i]))
+			}
+
+		case string:
+			string, ok := evaluated.(*object.String)
+			if !ok {
+				t.Fatalf("evaluated is not a *object.String. Got=%T", evaluated)
+			}
+
+			if string.Value != tt.expected {
+				t.Fatalf("string.Value has wrong value. Expected=%s, Got=%s", tt.expected, string.Value)
+			}
+
+		case *object.Error:
+			error, ok := evaluated.(*object.Error)
+
+			if !ok {
+				t.Fatalf("evaluated is not a *object.Error. Got=%T", evaluated)
+			}
+
+			expectedError, _ := tt.expected.(*object.Error)
+
+			if error.Inspect() != expectedError.Message {
+				t.Fatalf("error.Inspect has wrong value. Expected=%s, Got=%s", expectedError.Message, error.Inspect())
+			}
+		default:
+
+		}
+	}
+}
+
 func testNullObject(t *testing.T, obj object.Object) bool {
 	if obj != NULL {
 		t.Errorf("object is not NULL. got=%T (%v)", obj, obj)

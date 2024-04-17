@@ -23,25 +23,34 @@ var builtins = map[string]*object.Builtin{
 			}
 		},
 	},
-	// TODO: feat - append also string instancies
 	"anexar": {
 		Fn: func(args ...object.Object) object.Object {
 			if len(args) != 2 {
 				return newError("quantidade errada de parametros. recebeu=%d, aceita=2", len(args))
 			}
 
-			if args[0].Type() != object.LISTA_OBJ {
-				return newError("primeiro parametro com tipo errado. recebeu=%s, aceita=Lista", args[0].Type())
+			switch args[0].(type) {
+			case *object.Lista:
+				arr := args[0].(*object.Lista)
+				length := len(arr.Elements)
+
+				newElements := make([]object.Object, length+1)
+				copy(newElements, arr.Elements)
+				newElements[length] = args[1]
+
+				return &object.Lista{Elements: newElements}
+
+			case *object.String:
+				if args[1].Type() == object.STRING_OBJ {
+					string := args[0].(*object.String)
+					secondString := args[1].(*object.String)
+					return &object.String{Value: string.Value + secondString.Value}
+				}
+				return newError("segundo parametro com tipo errado. Recebeu=%s, aceita=STRING", args[1].Type())
+
+			default:
+				return newError("primeiro parametro com tipo errado. recebeu=%s, aceita=LISTA ou STRING", args[0].Type())
 			}
-
-			arr := args[0].(*object.Lista)
-			length := len(arr.Elements)
-
-			newElements := make([]object.Object, length+1)
-			copy(newElements, arr.Elements)
-			newElements[length] = args[1]
-
-			return &object.Lista{Elements: newElements}
 		},
 	},
 	"mostra": {
