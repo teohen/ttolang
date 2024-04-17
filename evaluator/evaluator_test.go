@@ -396,11 +396,11 @@ func TestIndexExpressions(t *testing.T) {
 		},
 		{
 			"[1, 2, 3][3]",
-			nil,
+			"Problema: índice 3 está vazio na lista",
 		},
 		{
 			"[1, 2, 3][-1]",
-			nil,
+			"Problema: índice -1 está vazio na lista",
 		},
 	}
 
@@ -409,10 +409,11 @@ func TestIndexExpressions(t *testing.T) {
 		integer, ok := tt.expected.(int)
 
 		if ok {
-
 			testIntegerObject(t, evaluated, int64(integer))
 		} else {
-			testNullObject(t, evaluated)
+			if evaluated.Inspect() != tt.expected {
+				t.Fatalf("Expected a problem for accessing invalid index. Got=%s", evaluated.Inspect())
+			}
 		}
 	}
 }

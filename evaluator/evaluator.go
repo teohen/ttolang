@@ -371,9 +371,8 @@ func evalListaIndexExpression(lista, index object.Object) object.Object {
 	idx := index.(*object.Integer).Value
 
 	max := int64(len(listaObject.Elements) - 1)
-	// TODO: retornar um erro ao acessar um array com indice nao existente
 	if idx < 0 || idx > max {
-		return NULL
+		return newError("índice %d está vazio na lista", idx)
 	}
 
 	return listaObject.Elements[idx]
