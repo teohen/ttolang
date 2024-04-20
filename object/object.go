@@ -12,6 +12,8 @@ type ObjectType string
 
 type BuiltinFunction func(args ...Object) Object
 
+// TODO: add support for struct
+// maybe something like cria pessoa <- {nome: "teteo", idade: 29}
 const (
 	INTEGER_OBJ       = "INTEIRO"
 	BOOLEAN_OBJ       = "BOOLEANO"
@@ -22,6 +24,7 @@ const (
 	STRING_OBJ        = "STRING"
 	BUILTIN_OBJ       = "BUILTIN"
 	LISTA_OBJ         = "LISTA"
+	ESTRUTURA_OBJ     = "ESTRUTURA"
 )
 
 type Object interface {
@@ -197,6 +200,27 @@ func (l *Lista) Inspect() string {
 	out.WriteString("[")
 	out.WriteString(strings.Join(elements, ", "))
 	out.WriteString("]")
+
+	return out.String()
+}
+
+type Estrutura struct {
+	Items map[string]Object
+}
+
+func (t *Estrutura) Type() ObjectType {
+
+	return ESTRUTURA_OBJ
+}
+
+func (t *Estrutura) Inspect() string {
+	var out bytes.Buffer
+
+	out.WriteString("{")
+	for _, e := range t.Items {
+		out.WriteString(e.Inspect())
+	}
+	out.WriteString("}")
 
 	return out.String()
 }

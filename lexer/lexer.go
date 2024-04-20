@@ -54,6 +54,8 @@ func (l *Lexer) checkSequenceCharType(checkingFn characterCheckingFn) string {
 
 }
 
+// TODO: adds comments
+// maybe something like /**/
 func (l *Lexer) skipWhitespace() {
 	for l.ch == ' ' || l.ch == '\t' || l.ch == '\n' || l.ch == '\r' {
 		l.readChar()

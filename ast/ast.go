@@ -410,3 +410,26 @@ func (re *RepeteExpression) String() string {
 	out.WriteString(";")
 	return out.String()
 }
+
+type EstruturaLiteral struct {
+	Token token.Token
+	Items map[string]Expression
+}
+
+func (tl *EstruturaLiteral) expressionNode() {}
+func (tl *EstruturaLiteral) TokenLiteral() string {
+	return tl.Token.Literal
+}
+func (tl *EstruturaLiteral) String() string {
+	var out bytes.Buffer
+
+	out.WriteString("{")
+	for k, v := range tl.Items {
+		out.WriteString(k)
+		out.WriteString("<-")
+		out.WriteString(v.String())
+	}
+	out.WriteString("}")
+
+	return out.String()
+}

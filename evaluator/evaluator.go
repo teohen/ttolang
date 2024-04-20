@@ -115,6 +115,10 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 
 	case *ast.RepeteExpression:
 		evalRepeteExpression(node.Step, node.Condition, node.RepeatingStatements, env)
+
+	case *ast.EstruturaLiteral:
+		val := evalEstruturaLiteralExpression(node, env)
+		return val
 	}
 
 	return nil
@@ -398,4 +402,16 @@ func evalRepeteExpression(step *ast.AssignStatement, condition ast.Expression, r
 		shouldLoop = !isTruthy(conditionalNewEnv)
 	}
 
+}
+
+func evalEstruturaLiteralExpression(node *ast.EstruturaLiteral, env *object.Environment) object.Object {
+
+	estr := &object.Estrutura{}
+	estr.Items = make(map[string]object.Object)
+
+	for k, v := range node.Items {
+		estr.Items[k] = Eval(v, env)
+	}
+
+	return estr
 }

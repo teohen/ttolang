@@ -530,6 +530,66 @@ func TestAnexarBuiltinFunction(t *testing.T) {
 	}
 }
 
+func TestEstruturaLiteral(t *testing.T) {
+	input := `
+			{
+			 nome <- "ttolang",
+			 cod <- 1,
+			 op <- proc(x) { x; }
+			}
+			`
+	evaluated := testEval(input)
+
+	estrutura, ok := evaluated.(*object.Estrutura)
+
+	if !ok {
+		t.Fatalf("evaluated not a *object.Estrutura. Got=%T", evaluated)
+	}
+
+	if len(estrutura.Items) != 3 {
+		t.Fatalf("estrutura.Items incorrect length. Expected=3, got=%d", len(estrutura.Items))
+	}
+
+	expectedKeys := []string{"nome", "cod", "op"}
+
+	count := 0
+	for k, _ := range estrutura.Items {
+		if k != expectedKeys[count] {
+			t.Fatalf("Estrutura.Item[%s] has wrong key. Expected=%s, got=%s", k, expectedKeys[count], k)
+		}
+		count += 1
+	}
+
+	if !testStringObject(t, estrutura.Items["nome"], "ttolang") {
+		return
+	}
+
+	if !testIntegerObject(t, estrutura.Items["cod"], 1) {
+		return
+	}
+
+	proc, ok := estrutura.Items["op"].(*object.Proc)
+
+	if !ok {
+		t.Fatalf("object is not Proc. got=%T (%v)", evaluated, evaluated)
+	}
+
+	if len(proc.Parameters) != 1 {
+		t.Fatalf("proc has wrong parameters. Parameters=%+v", proc.Parameters)
+	}
+
+	if proc.Parameters[0].String() != "x" {
+		t.Fatalf("parameter is not 'x'. got=%q", proc.Parameters[0])
+	}
+
+	expectedBody := "x"
+
+	if proc.Body.String() != expectedBody {
+		t.Fatalf("body is not %q. got=%q", expectedBody, proc.Body.String())
+	}
+
+}
+
 func testNullObject(t *testing.T, obj object.Object) bool {
 	if obj != NULL {
 		t.Errorf("object is not NULL. got=%T (%v)", obj, obj)
@@ -570,6 +630,22 @@ func testBooleanObject(t *testing.T, obj object.Object, expected string) bool {
 
 	if result.Value != expected {
 		t.Errorf("object was wrong value. got=%s, want=%s", result.Value, expected)
+		return false
+	}
+
+	return true
+}
+
+func testStringObject(t *testing.T, obj object.Object, expected string) bool {
+	result, ok := obj.(*object.String)
+
+	if !ok {
+		t.Errorf("object is not String. got=%T (%v)", obj, obj)
+		return false
+	}
+
+	if result.Value != expected {
+		t.Errorf("restul has wrong value. got=%s, want=%s", result.Value, expected)
 		return false
 	}
 

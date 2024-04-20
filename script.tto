@@ -1,2 +1,5 @@
-		cria nome <- "tto"; novo_nome <- anexar(nome, 3);novo_nome;
-
+cria pessoa <- {
+  name <- "ttolang",
+  cod <- 1,
+  op <- proc(name) { name; }
+}
