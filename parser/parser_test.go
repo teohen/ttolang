@@ -867,6 +867,82 @@ func TestParsingEstruturaLiterals(t *testing.T) {
 	}
 }
 
+func TestParsingEstruturaIndex(t *testing.T) {
+	input := `
+				{op <- proc(x) { x + 2; }}["op"](2)
+			`
+	l := lexer.New(input)
+	p := New(l)
+	program := p.ParseProgram()
+	checkParserErrors(t, p)
+	stmt, ok := program.Statements[0].(*ast.ExpressionStatement)
+
+	if !ok {
+		t.Fatalf("program.Statements not ast.ExpressionStatement. got=%T", program.Statements[0])
+	}
+
+	exp, ok := stmt.Expression.(*ast.CallExpression)
+
+	if !ok {
+		t.Fatalf("exp not ast.CallExpresssion. got=%T", stmt.Expression)
+	}
+
+	indexExpression, ok := exp.Function.(*ast.IndexExpression)
+
+	if !ok {
+		t.Fatalf("exp.Function not a *ast.IndexExpression. Got=%T", exp.Function)
+	}
+
+	if !testStringLiteral(t, indexExpression.Index, "op") {
+		return
+	}
+
+	estrutura, ok := indexExpression.Left.(*ast.EstruturaLiteral)
+
+	if !ok {
+		t.Fatalf("indexExpression.Left not *ast.EstruturaLiteral. got=%T", stmt.Expression)
+	}
+
+	if len(estrutura.Items) != 1 {
+		t.Fatalf("len(estrutura.Items) not 1. got=%d", len(estrutura.Items))
+	}
+
+	expectedKeys := []string{"op"}
+
+	for _, expk := range expectedKeys {
+		_, ok := estrutura.Items[expk]
+		if !ok {
+			t.Fatalf("Estrutura.Items has wrong key. Expected=%s", expk)
+		}
+	}
+
+	procLiteral, ok := estrutura.Items["op"].(*ast.ProcLiteral)
+	if !ok {
+		t.Fatalf("Estrutura.Items[op] is not a *ast.ProcLiteral. Got=%T", estrutura.Items["op"])
+	}
+
+	if len(procLiteral.Parameters) != 1 {
+		t.Fatalf("procLiteral parameters wrong. want 1, got=%d", len(procLiteral.Parameters))
+	}
+
+	testLiteralExpression(t, procLiteral.Parameters[0], "x")
+
+	if len(procLiteral.Body.Statements) != 1 {
+		t.Fatalf("procLiteral.Body.Statements has not 1 statements. got=%d", len(procLiteral.Body.Statements))
+	}
+
+	bodyStmt, ok := procLiteral.Body.Statements[0].(*ast.ExpressionStatement)
+
+	if !ok {
+		t.Fatalf("procLiteral body stmt is not ast.ExpressionStatement. got=%T", procLiteral.Body.Statements[0])
+	}
+
+	if !testInfixExpression(t, bodyStmt.Expression, "x", "+", 2) {
+		return
+	}
+
+}
+
 func testStringLiteral(t *testing.T, sl ast.Expression, value interface{}) bool {
 
 	stringLiteral, ok := sl.(*ast.StringLiteral)

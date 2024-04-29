@@ -365,6 +365,8 @@ func evalIndexExpression(left, index object.Object) object.Object {
 	switch {
 	case left.Type() == object.LISTA_OBJ && index.Type() == object.INTEGER_OBJ:
 		return evalListaIndexExpression(left, index)
+	case left.Type() == object.ESTRUTURA_OBJ && index.Type() == "STRING":
+		return evalEstruturaIndexExpression(left, index.Inspect())
 	default:
 		return newError("operador de indice não aceito: %s", left.Type())
 	}
@@ -381,7 +383,17 @@ func evalListaIndexExpression(lista, index object.Object) object.Object {
 
 	return listaObject.Elements[idx]
 }
+func evalEstruturaIndexExpression(estrutura object.Object, index string) object.Object {
+	estruturaObj := estrutura.(*object.Estrutura)
 
+	_, ok := estruturaObj.Items[index]
+
+	if !ok {
+		return newError("índice %s não existe na estrutura", index)
+	}
+
+	return estruturaObj.Items[index]
+}
 func evalRepeteExpression(step *ast.AssignStatement, condition ast.Expression, repeating *ast.BlockStatement, env *object.Environment) {
 	shouldLoop := false
 
