@@ -17,6 +17,7 @@ Uma linguagem interpretada, tipada dinamicamente e super divertida criada por mi
 - [closures](docs/closures.md)
 - [seleção](docs/seleção.md)
 - [Estrutura de dados: lista](docs/lista.md)
+- [Estrutura de dados: estrutura](docs/estrutura.md)
 - [repetição](docs/repetição.md)
 - [atribuição](docs/atribuição.md)
 - [problema](docs/problema.md)

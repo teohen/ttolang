@@ -23,9 +23,9 @@ tam(nome);
 ```
 
 ### anexar()
-O procedimento anexar() recebe 2 parâmetros e tem um comportamento diferente baseado no [tipo](tipos.md) do primeiro parâmetro. 
+O procedimento anexar() adiciona novos valores nas estruturas de dados da ttolang. Esse procedimento integrado recebe uma quantidade de parâmetros diferente baseando-se no [tipo](tipos.md) do primeiro parâmetro passado. 
 
-#### anexar(Lista, arg2)
+#### anexar(Lista, param2)
 Caso o primeiro parâmetro seja uma [lista](lista.md), o procedimento vai devolver uma nova [lista](lista.md) copiando todos os itens da [lista](lista.md) passada no primeiro parâmetro e anexando o item do segundo parâmetro ao final nova lista. Ainda nesse caso, o segundo parâmetro pode ser qualquer outro [tipo](tipo.md) disponível na ttolang.
 
 Exemplos de uso:
@@ -37,7 +37,7 @@ numeros <- anexar(numeros, vdd);
 mostra(numeros)
 // saída: [1, 2, 3, "quatro", vdd]
 ```
-#### anexar(String, arg2)
+#### anexar(String, param2)
 Caso o primeiro parâmetro seja uma [string](string.md), o procedimento irá devolver uma nova [string](string.md) contendo a junção das duas [strings](string.md) passadas por parâmetro. Ainda nesse caso, o segundo parâmetro OBRIGATORIAMENTE deve ser do tipo [string](string.md), resultando em um [problema](problema.md) se outro [tipo](tipo.md) for passado.
 
 Exemplos de uso:
@@ -45,5 +45,17 @@ Exemplos de uso:
 cria nome <- "tto";
 novo_nome <- anexar(nome, "lang");
 mostra(novo_nome)
+// saída: ttolang
+```
+
+#### anexar(Estrutura, String, param3)
+Caso o primeiro parâmetro seja uma [estrutura](estrutura.md), o procedimento irá devolver uma nova [estrutura](estrutura.md) contendo as propriedades existentes na [estrutura](estrutura.md) passada no primeiro parâmetro, assim como a nova propriedade que está sendo definida. O segundo parâmetro, que deve ser, obrigatoriamente, uma [string](string.md), servirá como identificador da nova propriedade. Já o terceiro parâmetro será o valor da nova propriedade podendo ser qualquer outro [tipo](tipo.md) disponível na ttolang. 
+Caso as regras dos parâmetros não sejam seguidas, o código resultará em um [problema](problema.md).
+
+Exemplos de uso:
+ ```
+cria estrutura <- {};
+cria nova_estrutura <- anexar(estrutura, "nome", "ttolang");
+mostra(nova_estrutura["nome"])
 // saída: ttolang
 ```
