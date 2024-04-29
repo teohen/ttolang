@@ -6,11 +6,18 @@ import (
 	"github.com/teohen/ttolang/object"
 )
 
+func validateLength(expectedLength, actualLength int) *object.Error {
+	if actualLength != expectedLength {
+		return newError("quantidade errada de parametros. recebeu=%d, aceita=%d", actualLength, expectedLength)
+	}
+	return nil
+}
+
 var builtins = map[string]*object.Builtin{
 	"tam": {
 		Fn: func(args ...object.Object) object.Object {
-			if len(args) != 1 {
-				return newError("quantidade errada de parametros. recebeu=%d, aceita=1", len(args))
+			if error := validateLength(1, len(args)); error != nil {
+				return error
 			}
 
 			switch arg := args[0].(type) {
@@ -25,12 +32,12 @@ var builtins = map[string]*object.Builtin{
 	},
 	"anexar": {
 		Fn: func(args ...object.Object) object.Object {
-			if len(args) != 2 {
-				return newError("quantidade errada de parametros. recebeu=%d, aceita=2", len(args))
-			}
-
 			switch args[0].(type) {
 			case *object.Lista:
+				if error := validateLength(2, len(args)); error != nil {
+					return error
+				}
+
 				arr := args[0].(*object.Lista)
 				length := len(arr.Elements)
 
@@ -41,6 +48,10 @@ var builtins = map[string]*object.Builtin{
 				return &object.Lista{Elements: newElements}
 
 			case *object.String:
+				if error := validateLength(2, len(args)); error != nil {
+					return error
+				}
+
 				if args[1].Type() == object.STRING_OBJ {
 					string := args[0].(*object.String)
 					secondString := args[1].(*object.String)
@@ -48,6 +59,18 @@ var builtins = map[string]*object.Builtin{
 				}
 				return newError("segundo parametro com tipo errado. Recebeu=%s, aceita=STRING", args[1].Type())
 
+			case *object.Estrutura:
+				if error := validateLength(3, len(args)); error != nil {
+					return error
+				}
+
+				estr := args[0].(*object.Estrutura)
+				estrParam, ok := args[1].(*object.String)
+				if ok {
+					estr.Items[estrParam.Value] = args[2]
+					return estr
+				}
+				return newError("segundo parametro com tipo errado. Recebeu=%s, aceita=STRING", args[1].Type())
 			default:
 				return newError("primeiro parametro com tipo errado. recebeu=%s, aceita=LISTA ou STRING", args[0].Type())
 			}

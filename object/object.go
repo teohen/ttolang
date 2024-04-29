@@ -12,8 +12,6 @@ type ObjectType string
 
 type BuiltinFunction func(args ...Object) Object
 
-// TODO: add support for struct
-// maybe something like cria pessoa <- {nome: "teteo", idade: 29}
 const (
 	INTEGER_OBJ       = "INTEIRO"
 	BOOLEAN_OBJ       = "BOOLEANO"

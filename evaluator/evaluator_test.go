@@ -479,6 +479,7 @@ func TestAnexarBuiltinFunction(t *testing.T) {
 		{"cria numeros <- [1, 2];novos_numeros <- anexar(numeros, 3)novos_numeros;", [3]int{1, 2, 3}},
 		{"cria nome <- \"tto\"; novo_nome <- anexar(nome, \"lang\")novo_nome;", "ttolang"},
 		{"cria nome <- \"tto\"; novo_nome <- anexar(nome, 3);novo_nome;", &error},
+		{"cria pessoa <- {}; anexar(pessoa, \"nome\", \"ttolang\");pessoa[\"nome\"];", "ttolang"},
 	}
 
 	for _, tt := range tests {
@@ -552,12 +553,11 @@ func TestEstruturaLiteral(t *testing.T) {
 
 	expectedKeys := []string{"nome", "cod", "op"}
 
-	count := 0
-	for k, _ := range estrutura.Items {
-		if k != expectedKeys[count] {
-			t.Fatalf("Estrutura.Item[%s] has wrong key. Expected=%s, got=%s", k, expectedKeys[count], k)
+	for _, v := range expectedKeys {
+		value, ok := estrutura.Items[v]
+		if !ok {
+			t.Fatalf("Estrutura.Item[%s] has does not exists. ", value)
 		}
-		count += 1
 	}
 
 	if !testStringObject(t, estrutura.Items["nome"], "ttolang") {
