@@ -3,6 +3,8 @@ package evaluator
 import (
 	"fmt"
 
+	"maps"
+
 	"github.com/teohen/ttolang/object"
 )
 
@@ -65,10 +67,13 @@ var builtins = map[string]*object.Builtin{
 				}
 
 				estr := args[0].(*object.Estrutura)
+				newItems := make(map[string]object.Object)
+				maps.Copy(newItems, estr.Items)
+
 				estrParam, ok := args[1].(*object.String)
 				if ok {
-					estr.Items[estrParam.Value] = args[2]
-					return estr
+					newItems[estrParam.Value] = args[2]
+					return &object.Estrutura{Items: newItems}
 				}
 				return newError("segundo parametro com tipo errado. Recebeu=%s, aceita=STRING", args[1].Type())
 			default:

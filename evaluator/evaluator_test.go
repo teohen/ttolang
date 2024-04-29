@@ -479,7 +479,7 @@ func TestAnexarBuiltinFunction(t *testing.T) {
 		{"cria numeros <- [1, 2];novos_numeros <- anexar(numeros, 3)novos_numeros;", [3]int{1, 2, 3}},
 		{"cria nome <- \"tto\"; novo_nome <- anexar(nome, \"lang\")novo_nome;", "ttolang"},
 		{"cria nome <- \"tto\"; novo_nome <- anexar(nome, 3);novo_nome;", &error},
-		{"cria pessoa <- {}; anexar(pessoa, \"nome\", \"ttolang\");pessoa[\"nome\"];", "ttolang"},
+		{"cria pessoa <- {}; cria nova_pessoa <- anexar(pessoa, \"nome\", \"ttolang\");nova_pessoa[\"nome\"];", "ttolang"},
 	}
 
 	for _, tt := range tests {

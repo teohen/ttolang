@@ -389,7 +389,7 @@ func evalEstruturaIndexExpression(estrutura object.Object, index string) object.
 	_, ok := estruturaObj.Items[index]
 
 	if !ok {
-		return newError("índice %s não existe na estrutura", index)
+		return newError("índice \"%s\" não existe na estrutura", index)
 	}
 
 	return estruturaObj.Items[index]
