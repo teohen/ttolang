@@ -11,6 +11,8 @@ type Lexer struct {
 	ch           byte
 }
 
+type characterCheckingFn func(byte) bool
+
 func New(input string) *Lexer {
 	l := &Lexer{
 		input: input}
@@ -37,32 +39,23 @@ func isLetter(ch byte) bool {
 	return 'a' <= ch && ch <= 'z' || 'A' <= ch && ch <= 'Z' || ch == '_'
 }
 
-// TODO: same logic here just changing the condition
 func isDigit(ch byte) bool {
 	return '0' <= ch && ch <= '9'
 }
 
-func (l *Lexer) readIdentifier() string {
+func (l *Lexer) checkSequenceCharType(checkingFn characterCheckingFn) string {
 	position := l.position
 
-	for isLetter(l.ch) {
+	for checkingFn(l.ch) {
 		l.readChar()
 	}
 
 	return l.input[position:l.position]
+
 }
 
-// TODO: same logic here just changing the condition
-func (l *Lexer) readNumber() string {
-	position := l.position
-
-	for isDigit(l.ch) {
-		l.readChar()
-	}
-
-	return l.input[position:l.position]
-}
-
+// TODO: adds comments
+// maybe something like /**/
 func (l *Lexer) skipWhitespace() {
 	for l.ch == ' ' || l.ch == '\t' || l.ch == '\n' || l.ch == '\r' {
 		l.readChar()
@@ -138,12 +131,12 @@ func (l *Lexer) NextToken() token.Token {
 
 	default:
 		if isLetter(l.ch) {
-			tok.Literal = l.readIdentifier()
+			tok.Literal = l.checkSequenceCharType(isLetter)
 			tok.Type = token.LookupIdent(tok.Literal)
 			return tok
 		} else if isDigit(l.ch) {
 			tok.Type = token.INT
-			tok.Literal = l.readNumber()
+			tok.Literal = l.checkSequenceCharType(isDigit)
 			return tok
 		} else {
 			tok = newToken(token.ILLEGAL, l.ch)

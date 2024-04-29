@@ -27,8 +27,8 @@ const (
 	RBRACE    = "}"
 	EQ        = "="
 	NEQ       = "!="
-	RBRACKET  = "CHAVES_DIR"
-	LBRACKET  = "CHAVES_ESQ"
+	RBRACKET  = "COLCHETES_DIR"
+	LBRACKET  = "COLCHETES_ESQ"
 
 	FUNCTION = "PROCESSO"
 	LET      = "CRIACAO"

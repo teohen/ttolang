@@ -115,6 +115,10 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 
 	case *ast.RepeteExpression:
 		evalRepeteExpression(node.Step, node.Condition, node.RepeatingStatements, env)
+
+	case *ast.EstruturaLiteral:
+		val := evalEstruturaLiteralExpression(node, env)
+		return val
 	}
 
 	return nil
@@ -361,6 +365,8 @@ func evalIndexExpression(left, index object.Object) object.Object {
 	switch {
 	case left.Type() == object.LISTA_OBJ && index.Type() == object.INTEGER_OBJ:
 		return evalListaIndexExpression(left, index)
+	case left.Type() == object.ESTRUTURA_OBJ && index.Type() == "STRING":
+		return evalEstruturaIndexExpression(left, index.Inspect())
 	default:
 		return newError("operador de indice não aceito: %s", left.Type())
 	}
@@ -371,14 +377,23 @@ func evalListaIndexExpression(lista, index object.Object) object.Object {
 	idx := index.(*object.Integer).Value
 
 	max := int64(len(listaObject.Elements) - 1)
-	// TODO: retornar um erro ao acessar um array com indice nao existente
 	if idx < 0 || idx > max {
-		return NULL
+		return newError("índice %d está vazio na lista", idx)
 	}
 
 	return listaObject.Elements[idx]
 }
+func evalEstruturaIndexExpression(estrutura object.Object, index string) object.Object {
+	estruturaObj := estrutura.(*object.Estrutura)
 
+	_, ok := estruturaObj.Items[index]
+
+	if !ok {
+		return newError("índice \"%s\" não existe na estrutura", index)
+	}
+
+	return estruturaObj.Items[index]
+}
 func evalRepeteExpression(step *ast.AssignStatement, condition ast.Expression, repeating *ast.BlockStatement, env *object.Environment) {
 	shouldLoop := false
 
@@ -399,4 +414,16 @@ func evalRepeteExpression(step *ast.AssignStatement, condition ast.Expression, r
 		shouldLoop = !isTruthy(conditionalNewEnv)
 	}
 
+}
+
+func evalEstruturaLiteralExpression(node *ast.EstruturaLiteral, env *object.Environment) object.Object {
+
+	estr := &object.Estrutura{}
+	estr.Items = make(map[string]object.Object)
+
+	for k, v := range node.Items {
+		estr.Items[k] = Eval(v, env)
+	}
+
+	return estr
 }

@@ -37,6 +37,9 @@ func TestNextToken(t *testing.T) {
 	repete(i <- i + 1 ate i < 10) {
 		i;
 	}
+
+	{nome <- "ttolang", code <- 1, op <- proc(x) { x; }}
+	{op <- proc(x) { x + 2; }}["op"](2)
 	`
 
 	tests := []struct {
@@ -150,7 +153,46 @@ func TestNextToken(t *testing.T) {
 		{token.IDENT, "i"},
 		{token.SEMICOLON, ";"},
 		{token.RBRACE, "}"},
-
+		{token.LBRACE, "{"},
+		{token.IDENT, "nome"},
+		{token.ASSIGN, "<-"},
+		{token.STRING, "ttolang"},
+		{token.COMMA, ","},
+		{token.IDENT, "code"},
+		{token.ASSIGN, "<-"},
+		{token.INT, "1"},
+		{token.COMMA, ","},
+		{token.IDENT, "op"},
+		{token.ASSIGN, "<-"},
+		{token.FUNCTION, "proc"},
+		{token.LPAREN, "("},
+		{token.IDENT, "x"},
+		{token.RPAREN, ")"},
+		{token.LBRACE, "{"},
+		{token.IDENT, "x"},
+		{token.SEMICOLON, ";"},
+		{token.RBRACE, "}"},
+		{token.RBRACE, "}"},
+		{token.LBRACE, "{"},
+		{token.IDENT, "op"},
+		{token.ASSIGN, "<-"},
+		{token.FUNCTION, "proc"},
+		{token.LPAREN, "("},
+		{token.IDENT, "x"},
+		{token.RPAREN, ")"},
+		{token.LBRACE, "{"},
+		{token.IDENT, "x"},
+		{token.PLUS, "+"},
+		{token.INT, "2"},
+		{token.SEMICOLON, ";"},
+		{token.RBRACE, "}"},
+		{token.RBRACE, "}"},
+		{token.LBRACKET, "["},
+		{token.STRING, "op"},
+		{token.RBRACKET, "]"},
+		{token.LPAREN, "("},
+		{token.INT, "2"},
+		{token.RPAREN, ")"},
 		{token.EOF, ""},
 	}
 

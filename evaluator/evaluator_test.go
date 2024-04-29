@@ -396,11 +396,11 @@ func TestIndexExpressions(t *testing.T) {
 		},
 		{
 			"[1, 2, 3][3]",
-			nil,
+			"Problema: índice 3 está vazio na lista",
 		},
 		{
 			"[1, 2, 3][-1]",
-			nil,
+			"Problema: índice -1 está vazio na lista",
 		},
 	}
 
@@ -409,10 +409,11 @@ func TestIndexExpressions(t *testing.T) {
 		integer, ok := tt.expected.(int)
 
 		if ok {
-
 			testIntegerObject(t, evaluated, int64(integer))
 		} else {
-			testNullObject(t, evaluated)
+			if evaluated.Inspect() != tt.expected {
+				t.Fatalf("Expected a problem for accessing invalid index. Got=%s", evaluated.Inspect())
+			}
 		}
 	}
 }
@@ -469,6 +470,126 @@ func TestRepeteExpression(t *testing.T) {
 	testIntegerObject(t, testEval(inputNestedLoop), 16)
 }
 
+func TestAnexarBuiltinFunction(t *testing.T) {
+	error := object.Error{Message: "Problema: segundo parametro com tipo errado. Recebeu=INTEIRO, aceita=STRING"}
+	tests := []struct {
+		input    string
+		expected interface{}
+	}{
+		{"cria numeros <- [1, 2];novos_numeros <- anexar(numeros, 3)novos_numeros;", [3]int{1, 2, 3}},
+		{"cria nome <- \"tto\"; novo_nome <- anexar(nome, \"lang\")novo_nome;", "ttolang"},
+		{"cria nome <- \"tto\"; novo_nome <- anexar(nome, 3);novo_nome;", &error},
+		{"cria pessoa <- {}; cria nova_pessoa <- anexar(pessoa, \"nome\", \"ttolang\");nova_pessoa[\"nome\"];", "ttolang"},
+	}
+
+	for _, tt := range tests {
+		evaluated := testEval(tt.input)
+
+		switch tt.expected.(type) {
+		case []int:
+			list, ok := evaluated.(*object.Lista)
+
+			if !ok {
+				t.Fatalf("expected to be evaluated to a *object.Lista. Got=%T", evaluated)
+			}
+
+			expectedList := tt.expected.([]int)
+
+			if len(list.Elements) != len(expectedList) {
+				t.Fatalf("list.Elements has wrong size. Expected=%d, got=%d", len(expectedList), len(list.Elements))
+			}
+
+			for i, item := range list.Elements {
+				testIntegerObject(t, item, int64(expectedList[i]))
+			}
+
+		case string:
+			string, ok := evaluated.(*object.String)
+			if !ok {
+				t.Fatalf("evaluated is not a *object.String. Got=%T", evaluated)
+			}
+
+			if string.Value != tt.expected {
+				t.Fatalf("string.Value has wrong value. Expected=%s, Got=%s", tt.expected, string.Value)
+			}
+
+		case *object.Error:
+			error, ok := evaluated.(*object.Error)
+
+			if !ok {
+				t.Fatalf("evaluated is not a *object.Error. Got=%T", evaluated)
+			}
+
+			expectedError, _ := tt.expected.(*object.Error)
+
+			if error.Inspect() != expectedError.Message {
+				t.Fatalf("error.Inspect has wrong value. Expected=%s, Got=%s", expectedError.Message, error.Inspect())
+			}
+		default:
+
+		}
+	}
+}
+
+func TestEstruturaLiteral(t *testing.T) {
+	input := `
+			{
+			 nome <- "ttolang",
+			 cod <- 1,
+			 op <- proc(x) { x; }
+			}
+			`
+	evaluated := testEval(input)
+
+	estrutura, ok := evaluated.(*object.Estrutura)
+
+	if !ok {
+		t.Fatalf("evaluated not a *object.Estrutura. Got=%T", evaluated)
+	}
+
+	if len(estrutura.Items) != 3 {
+		t.Fatalf("estrutura.Items incorrect length. Expected=3, got=%d", len(estrutura.Items))
+	}
+
+	expectedKeys := []string{"nome", "cod", "op"}
+
+	for _, v := range expectedKeys {
+		value, ok := estrutura.Items[v]
+		if !ok {
+			t.Fatalf("Estrutura.Item[%s] has does not exists. ", value)
+		}
+	}
+
+	if !testStringObject(t, estrutura.Items["nome"], "ttolang") {
+		return
+	}
+
+	if !testIntegerObject(t, estrutura.Items["cod"], 1) {
+		return
+	}
+
+	proc, ok := estrutura.Items["op"].(*object.Proc)
+
+	if !ok {
+		t.Fatalf("object is not Proc. got=%T (%v)", evaluated, evaluated)
+	}
+
+	if len(proc.Parameters) != 1 {
+		t.Fatalf("proc has wrong parameters. Parameters=%+v", proc.Parameters)
+	}
+
+	if proc.Parameters[0].String() != "x" {
+		t.Fatalf("parameter is not 'x'. got=%q", proc.Parameters[0])
+	}
+
+	expectedBody := "x"
+
+	if proc.Body.String() != expectedBody {
+		t.Fatalf("body is not %q. got=%q", expectedBody, proc.Body.String())
+	}
+
+}
+
 func testNullObject(t *testing.T, obj object.Object) bool {
 	if obj != NULL {
 		t.Errorf("object is not NULL. got=%T (%v)", obj, obj)
@@ -509,6 +630,22 @@ func testBooleanObject(t *testing.T, obj object.Object, expected string) bool {
 
 	if result.Value != expected {
 		t.Errorf("object was wrong value. got=%s, want=%s", result.Value, expected)
+		return false
+	}
+
+	return true
+}
+
+func testStringObject(t *testing.T, obj object.Object, expected string) bool {
+	result, ok := obj.(*object.String)
+
+	if !ok {
+		t.Errorf("object is not String. got=%T (%v)", obj, obj)
+		return false
+	}
+
+	if result.Value != expected {
+		t.Errorf("restul has wrong value. got=%s, want=%s", result.Value, expected)
 		return false
 	}
 

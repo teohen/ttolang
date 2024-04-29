@@ -70,6 +70,7 @@ func New(l *lexer.Lexer) *Parser {
 	p.registerPrefix(token.STRING, p.parseStringLiteral)
 	p.registerPrefix(token.LBRACKET, p.parseListaLiteral)
 	p.registerPrefix(token.LOOP, p.parseRepeteExpression)
+	p.registerPrefix(token.LBRACE, p.parseEstruturaLiteral)
 
 	p.infixParseFns = make(map[token.TokenType]infixParseFn)
 	p.registerInfix(token.PLUS, p.parseInfixExpression)
@@ -81,6 +82,7 @@ func New(l *lexer.Lexer) *Parser {
 	p.registerInfix(token.LT, p.parseInfixExpression)
 	p.registerInfix(token.GT, p.parseInfixExpression)
 	p.registerInfix(token.LPAREN, p.parseCallExpression)
+	p.registerInfix(token.LBRACKET, p.parseIndexExpression)
 	p.registerInfix(token.LBRACKET, p.parseIndexExpression)
 
 	return p
@@ -541,4 +543,38 @@ func (p *Parser) parseRepeteExpression() ast.Expression {
 
 	return expression
 
+}
+
+func (p *Parser) parseEstruturaLiteral() ast.Expression {
+	estrutura := &ast.EstruturaLiteral{Token: p.curToken}
+
+	estrutura.Items = p.parseEstruturaItems(token.RBRACE)
+
+	return estrutura
+
+}
+
+func (p *Parser) parseEstruturaItems(end token.TokenType) map[string]ast.Expression {
+	EstruturaMap := map[string]ast.Expression{}
+
+	if p.peekTokenIs(end) {
+		p.nextToken()
+		return EstruturaMap
+	}
+
+	for !p.peekTokenIs(token.RBRACE) && !p.curTokenIs(token.RBRACE) {
+		p.nextToken()
+		key := p.curToken.Literal
+
+		p.nextToken()
+		p.nextToken()
+		EstruturaMap[key] = p.parseExpression(LOWEST)
+		p.nextToken()
+	}
+
+	if !p.curTokenIs(end) {
+		return nil
+	}
+
+	return EstruturaMap
 }
