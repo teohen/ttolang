@@ -130,6 +130,20 @@ func nativeBoolToBooleanObject(input bool) *object.Boolean {
 	}
 	return FALSE
 }
+func evalANDOperator(left object.Object, right object.Object) *object.Boolean {
+	if left.Inspect() == "vdd" && right.Inspect() == "vdd" {
+		return TRUE
+	}
+	return FALSE
+
+}
+
+func evalOROperator(left object.Object, right object.Object) *object.Boolean {
+	if left.Inspect() == "falso" && right.Inspect() == "falso" {
+		return FALSE
+	}
+	return TRUE
+}
 
 func evalProgram(stmts []ast.Statement, env *object.Environment) object.Object {
 	var result object.Object
@@ -191,10 +205,15 @@ func evalInfixExpression(operator string, left, right object.Object) object.Obje
 		return nativeBoolToBooleanObject(left == right)
 	case operator == "!=" && left.Type() == object.BOOLEAN_OBJ && right.Type() == object.BOOLEAN_OBJ:
 		return nativeBoolToBooleanObject(left != right)
-	case left.Type() != right.Type():
-		return newError("tipos diferentes: %s %s %s", left.Type(), operator, right.Type())
+	case operator == "&" && left.Type() == object.BOOLEAN_OBJ && right.Type() == object.BOOLEAN_OBJ:
+		return evalANDOperator(left, right)
+	case operator == "|" && left.Type() == object.BOOLEAN_OBJ && right.Type() == object.BOOLEAN_OBJ:
+		return evalOROperator(left, right)
+
 	case left.Type() == object.STRING_OBJ && right.Type() == object.STRING_OBJ:
 		return evalStringInfixExpression(operator, left, right)
+	case left.Type() != right.Type():
+		return newError("tipos diferentes: %s %s %s", left.Type(), operator, right.Type())
 	default:
 		return newError("operador desconhecido: %s %s %s", left.Type(), operator, right.Type())
 	}

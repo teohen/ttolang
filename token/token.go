@@ -7,7 +7,6 @@ type Token struct {
 	Literal string
 }
 
-// TODO: Add the AND/OR operators
 const (
 	ILLEGAL   = "DESCONHECIDO"
 	EOF       = "FIM_DE_ARQUIVO"
@@ -29,6 +28,8 @@ const (
 	NEQ       = "!="
 	RBRACKET  = "COLCHETES_DIR"
 	LBRACKET  = "COLCHETES_ESQ"
+	AND       = "&"
+	OR        = "|"
 
 	FUNCTION = "PROCESSO"
 	LET      = "CRIACAO"

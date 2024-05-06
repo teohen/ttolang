@@ -242,6 +242,10 @@ func TestParsingInfixExpressions(t *testing.T) {
 		{"vdd = vdd;", true, "=", true},
 		{"vdd != falso;", true, "!=", false},
 		{"falso = falso;", false, "=", false},
+		{"vdd & vdd;", true, "&", true},
+		{"vdd | vdd;", true, "|", true},
+		{"vdd & falso;", true, "&", false},
+		{"vdd | falso;", true, "|", false},
 	}
 
 	for _, tt := range infixTests {
@@ -378,7 +382,24 @@ func TestOperatorPrecedenceParsing(t *testing.T) {
 		{
 			"add(a * b[2], b[1], 2 * [1, 2][1])",
 			"add((a * (b[2])), (b[1]), (2 * ([1, 2][1])))",
-		}}
+		},
+		{
+			"vdd & vdd & (vdd & vdd)",
+			"((vdd & vdd) & (vdd & vdd))",
+		},
+		{
+			"vdd & vdd & (falso | vdd)",
+			"((vdd & vdd) & (falso | vdd))",
+		},
+		{
+			"vdd & vdd = falso = (vdd & vdd)",
+			"(vdd & ((vdd = falso) = (vdd & vdd)))",
+		},
+		{
+			"vdd & vdd | vdd",
+			"((vdd & vdd) | vdd)",
+		},
+	}
 	for _, tt := range tests {
 		l := lexer.New(tt.input)
 		p := New(l)
