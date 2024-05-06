@@ -1,13 +1,14 @@
 ## Operadores
 
 Operadores permitem realizar operações lógicas e matemáticas nos [tipos](tipos.md) existentes na ttolang. Alguns operadores somente podem ser utilizados em [tipo](tipos.md) específicos da ttolang. 
-Os Operadores seguem a seguinte ordem de precedência em ttolang
+Os Operadores seguem a seguinte ordem de precedência em ttolang, onde quanto MENOR a prioridade de precedência, mais acima na listagem:
 
-    1. IGUAL A, DIFERENTE DE
-  	2. MAIOR QUE, MENOR QUE
-  	3. SOMA, SUBTRAÇÃO
-  	4. MULTIPLICAÇÃO, DIVISÃO
-  	5. NEGAÇÃO
+    1. E, OU
+    2. IGUAL A, DIFERENTE DE
+  	3. MAIOR QUE, MENOR QUE
+  	4. SOMA, SUBTRAÇÃO
+  	5. MULTIPLICAÇÃO, DIVISÃO
+  	6. NEGAÇÃO
 
 Os Operadores existentes na ttolang são representados por símbolos e estão dividos em duas categorias: matemáticos e lógicos.
 1. Matemáticos
@@ -25,6 +26,8 @@ Os Operadores existentes na ttolang são representados por símbolos e estão di
         3. = (IGUAL A)
         4. != (DIFERENTE DE)
         5. ! (NEGAÇÃO)
+        6. & (E)
+        7. | (OU)
 
 OBS1: alguns operadores lógicos não podem ser utilizados com alguns [tipos](tipos.md) específicos. Por exemplo, o operador lógico de NEGAÇÃO (!) não pode ser utilizado com o [tipo](tipos.md) [inteiro](inteiros.md). Ao contrário do operador lógico MAIOR QUE (>) pode ser utilizado com o [tipo](tipos.md) [inteiro](inteiros.md).
 
