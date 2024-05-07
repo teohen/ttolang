@@ -61,6 +61,14 @@ func TestEvalBooleanExpression(t *testing.T) {
 		{"(1 < 2) = falso", "falso"},
 		{"(1 > 2) = vdd", "falso"},
 		{"(1 > 2) = falso", "vdd"},
+		{"vdd & vdd", "vdd"},
+		{"vdd & falso", "falso"},
+		{"falso & vdd", "falso"},
+		{"falso & falso", "falso"},
+		{"vdd | vdd", "vdd"},
+		{"vdd | falso", "vdd"},
+		{"falso | vdd", "vdd"},
+		{"falso | falso", "falso"},
 	}
 
 	for _, tt := range tests {

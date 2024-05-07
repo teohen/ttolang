@@ -39,7 +39,9 @@ func TestNextToken(t *testing.T) {
 	}
 
 	{nome <- "ttolang", code <- 1, op <- proc(x) { x; }}
-	{op <- proc(x) { x + 2; }}["op"](2)
+	{op <- proc(x) { x + 2; }}["op"](2);
+	vdd & vdd;
+	falso | vdd;
 	`
 
 	tests := []struct {
@@ -193,6 +195,15 @@ func TestNextToken(t *testing.T) {
 		{token.LPAREN, "("},
 		{token.INT, "2"},
 		{token.RPAREN, ")"},
+		{token.SEMICOLON, ";"},
+		{token.VDD, "vdd"},
+		{token.AND, "&"},
+		{token.VDD, "vdd"},
+		{token.SEMICOLON, ";"},
+		{token.FALSE, "falso"},
+		{token.OR, "|"},
+		{token.VDD, "vdd"},
+		{token.SEMICOLON, ";"},
 		{token.EOF, ""},
 	}
 
@@ -202,7 +213,7 @@ func TestNextToken(t *testing.T) {
 		tok := l.NextToken()
 
 		if tok.Type != tt.typeExpected {
-			t.Fatalf("tests[%d] - tokentype wrong. expected=%q, got=%q", i, tt.typeExpected, tok.Literal)
+			t.Fatalf("tests[%d] - token type wrong. expected=%q, got=%q", i, tt.typeExpected, tok.Literal)
 		}
 	}
 }
