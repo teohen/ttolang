@@ -6,7 +6,7 @@ import (
 	"github.com/teohen/ttolang/token"
 )
 
-func TestNextToken(t *testing.T) {
+func TestProcs(t *testing.T) {
 	input := `
 	cria five <- 5;
 	cria ten <- 10;
