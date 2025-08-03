@@ -596,6 +596,9 @@ func (p *Parser) parseEstruturaItems(end token.TokenType) map[string]ast.Express
 	return EstruturaMap
 }
 
+// TODO: check file extension
+// TODO make imports relative to the file not the program
+
 func (p *Parser) parseImportaStatement() ast.ImportaStatement {
 	importaStt := &ast.ImportaStatement{Token: p.curToken}
 	p.nextToken()
