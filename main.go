@@ -20,3 +20,5 @@ func main() {
 		repl.Start(os.Stdin, os.Stdout)
 	}
 }
+
+// TODO: error when trying to redefine a existent indentifier
