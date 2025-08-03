@@ -1,7 +1,6 @@
 package loader
 
 import (
-	"bufio"
 	"fmt"
 	"log"
 	"os"
@@ -11,27 +10,15 @@ import (
 	"github.com/teohen/ttolang/object"
 	"github.com/teohen/ttolang/parser"
 	"github.com/teohen/ttolang/repl"
+	"github.com/teohen/ttolang/utils"
 )
 
 func Load(path string) {
-	file, err := os.Open("./" + path)
+	env := object.NewEnvironment()
+	err, code := utils.LoadFile("./" + path)
 
 	if err != nil {
-		panic(err)
-	}
-
-	defer func() {
-		if err = file.Close(); err != nil {
-			log.Fatal(err)
-		}
-	}()
-
-	scanner := bufio.NewScanner(file)
-	env := object.NewEnvironment()
-	code := ""
-
-	for scanner.Scan() {
-		code += scanner.Text()
+		log.Fatalf("Error opening .tto file in path (%s): %s", path, err)
 	}
 
 	l := lexer.New(code)
