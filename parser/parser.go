@@ -7,6 +7,7 @@ import (
 	"github.com/teohen/ttolang/ast"
 	"github.com/teohen/ttolang/lexer"
 	"github.com/teohen/ttolang/token"
+	"github.com/teohen/ttolang/utils"
 )
 
 const (
@@ -139,10 +140,10 @@ func (p *Parser) ParseProgram() *ast.Program {
 	program.Statements = []ast.Statement{}
 
 	for !p.curTokenIs(token.EOF) {
-		stmt := p.parseStatement()
+		stmts := p.parseStatement()
 
-		if stmt != nil {
-			program.Statements = append(program.Statements, stmt)
+		if stmts != nil {
+			program.Statements = append(program.Statements, stmts...)
 		}
 
 		p.nextToken()
@@ -151,16 +152,26 @@ func (p *Parser) ParseProgram() *ast.Program {
 	return program
 }
 
-func (p *Parser) parseStatement() ast.Statement {
+func (p *Parser) parseStatement() []ast.Statement {
 
-	if p.curToken.Type == token.LET {
-		return p.parseCriaStatement()
+	sttms := []ast.Statement{}
+
+	if p.curToken.Type == token.IMPORT {
+		importaStt := p.parseImportaStatement()
+		sttms = append(sttms, importaStt.Program.Statements...)
+		return sttms
+	} else if p.curToken.Type == token.LET {
+		sttms = append(sttms, p.parseCriaStatement())
+		return sttms
 	} else if p.curToken.Type == token.RETURN {
-		return p.parseDevolveStatement()
+		sttms = append(sttms, p.parseDevolveStatement())
+		return sttms
 	} else if p.curToken.Type == token.IDENT && p.peekToken.Type == token.ASSIGN {
-		return p.parseAssignStatement(token.SEMICOLON)
+		sttms = append(sttms, p.parseAssignStatement(token.SEMICOLON))
+		return sttms
 	} else {
-		return p.parseExpressionStatement()
+		sttms = append(sttms, p.parseExpressionStatement())
+		return sttms
 	}
 }
 
@@ -215,6 +226,7 @@ func (p *Parser) parseExpressionStatement() *ast.ExpressionStatement {
 }
 
 func (p *Parser) parseExpression(precedence int) ast.Expression {
+	//fmt.Println(p.curToken.Literal)
 	prefix := p.prefixParseFns[p.curToken.Type]
 
 	if prefix == nil {
@@ -366,9 +378,9 @@ func (p *Parser) parseBlockStatement() *ast.BlockStatement {
 	p.nextToken()
 
 	for !p.curTokenIs(token.RBRACE) && !p.curTokenIs(token.EOF) {
-		stmt := p.parseStatement()
-		if stmt != nil {
-			block.Statements = append(block.Statements, stmt)
+		stmts := p.parseStatement()
+		if stmts != nil {
+			block.Statements = append(block.Statements, stmts...)
 		}
 		p.nextToken()
 	}
@@ -582,4 +594,33 @@ func (p *Parser) parseEstruturaItems(end token.TokenType) map[string]ast.Express
 	}
 
 	return EstruturaMap
+}
+
+func (p *Parser) parseImportaStatement() ast.ImportaStatement {
+	importaStt := &ast.ImportaStatement{Token: p.curToken}
+	p.nextToken()
+	importaStt.FilePath = &ast.StringLiteral{Token: p.curToken, Value: p.curToken.Literal}
+
+	err, packageText := utils.LoadFile(p.curToken.Literal)
+	if err != nil {
+		msg := fmt.Sprintf("Não foi possível importar o pacote: %s. Motivo: %s", importaStt.FilePath, err)
+		p.errors = append(p.errors, msg)
+	}
+
+	tks := lexer.New(packageText)
+	parser := New(tks)
+
+	pgrm := parser.ParseProgram()
+
+	if len(parser.Errors()) != 0 {
+		p.errors = append(p.errors, parser.errors...)
+		return *importaStt
+	}
+
+	importaStt.Program = *pgrm
+
+	importaStt.Program.Statements = append(importaStt.Program.Statements, importaStt)
+
+	p.nextToken()
+	return *importaStt
 }

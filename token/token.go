@@ -45,6 +45,8 @@ const (
 	GT = ">"
 
 	STRING = "STRING"
+
+	IMPORT = "IMPORT"
 )
 
 var keywords = map[string]TokenType{
@@ -57,6 +59,7 @@ var keywords = map[string]TokenType{
 	"devolve": RETURN,
 	"repete":  LOOP,
 	"ate":     TO,
+	"importa": IMPORT,
 }
 
 func LookupIdent(ident string) TokenType {

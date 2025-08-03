@@ -6,6 +6,7 @@ import (
 
 	"github.com/teohen/ttolang/ast"
 	"github.com/teohen/ttolang/lexer"
+	"github.com/teohen/ttolang/utils"
 )
 
 func TestCriaStatements(t *testing.T) {
@@ -959,6 +960,70 @@ func TestParsingEstruturaIndex(t *testing.T) {
 	}
 
 	if !testInfixExpression(t, bodyStmt.Expression, "x", "+", 2) {
+		return
+	}
+
+}
+
+func TestImportaStatement(t *testing.T) {
+	packageCode := `
+		cria nome <- "teteo";
+	`
+
+	err := utils.WriteFile("./biblioteca.tto", packageCode)
+
+	if err != nil {
+		t.Fatalf("Fail to create package file. got=%s", err.Error())
+	}
+
+	input := `
+				importa "./biblioteca.tto";
+				cria idade <- 3;
+				mostra(nome);
+			`
+
+	l := lexer.New(input)
+	p := New(l)
+	program := p.ParseProgram()
+	checkParserErrors(t, p)
+
+	packageSttms := program.Statements[:1]
+	currentSttms := program.Statements[1:]
+
+	if len(packageSttms) != 1 {
+		t.Fatalf("package length not 1. got=%d", len(packageSttms))
+	}
+
+	if len(currentSttms) != 3 {
+		fmt.Println(currentSttms)
+		t.Fatalf("currenSttms length not 3. got=%d", len(currentSttms))
+	}
+
+	stmt, ok := currentSttms[0].(*ast.ImportaStatement)
+
+	if !ok {
+		t.Fatalf("currentStatements[0] not ast.ImportaStatement. got=%T", currentSttms[0])
+	}
+
+	if !testStringLiteral(t, stmt.FilePath, "./biblioteca.tto") {
+		t.Fatalf("stmt.FilePath not a ast.StringLiteral. got=%T", stmt.FilePath)
+	}
+
+	if len(stmt.Program.Statements) != 2 {
+		t.Fatalf("stmt.Program.Statement length not 2. got=%d", len(stmt.Program.Statements))
+	}
+
+	criaSttm, ok := stmt.Program.Statements[0].(*ast.CriaStatement)
+
+	if !ok {
+		t.Fatalf("criaSttm not ast.CriaStatement type. got=%T", criaSttm)
+	}
+
+	if !testCriaStatement(t, criaSttm, "nome") {
+		return
+	}
+
+	if !testStringLiteral(t, criaSttm.Value, "teteo") {
 		return
 	}
 

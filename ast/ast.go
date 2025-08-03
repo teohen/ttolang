@@ -433,3 +433,23 @@ func (tl *EstruturaLiteral) String() string {
 
 	return out.String()
 }
+
+type ImportaStatement struct {
+	Token    token.Token
+	FilePath Expression
+	Program  Program
+}
+
+func (is *ImportaStatement) statementNode() {}
+
+func (is *ImportaStatement) TokenLiteral() string {
+	return is.Token.Literal
+}
+func (is *ImportaStatement) String() string {
+	var out bytes.Buffer
+
+	out.WriteString("importa: ")
+	out.WriteString(is.FilePath.String())
+
+	return out.String()
+}
