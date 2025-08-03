@@ -215,8 +215,16 @@ func (t *Estrutura) Inspect() string {
 	var out bytes.Buffer
 
 	out.WriteString("{")
-	for _, e := range t.Items {
+	i := 0
+	for k, e := range t.Items {
+		out.WriteString(k)
+		out.WriteString(": ")
 		out.WriteString(e.Inspect())
+
+		if len(t.Items) > i+1 {
+			out.WriteString(", ")
+		}
+		i++
 	}
 	out.WriteString("}")
 
