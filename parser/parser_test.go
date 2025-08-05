@@ -22,7 +22,7 @@ func TestCriaStatements(t *testing.T) {
 
 	for _, tt := range tests {
 		l := lexer.New(tt.input)
-		p := New(l)
+		p := New(l, "./")
 		program := p.ParseProgram()
 
 		checkParserErrors(t, p)
@@ -92,7 +92,7 @@ func TestDevolveStatements(t *testing.T) {
 	for _, tt := range tests {
 
 		l := lexer.New(tt.input)
-		p := New(l)
+		p := New(l, "./")
 		program := p.ParseProgram()
 		checkParserErrors(t, p)
 
@@ -121,7 +121,7 @@ func TestIdentifierExpression(t *testing.T) {
 	input := "foobar;"
 
 	l := lexer.New(input)
-	p := New(l)
+	p := New(l, "./")
 	program := p.ParseProgram()
 	checkParserErrors(t, p)
 
@@ -154,7 +154,7 @@ func TestIntegerLiteralExpression(t *testing.T) {
 	input := "5;"
 
 	l := lexer.New(input)
-	p := New(l)
+	p := New(l, "./")
 	program := p.ParseProgram()
 	checkParserErrors(t, p)
 
@@ -196,7 +196,7 @@ func TestParsingPrefixExpressions(t *testing.T) {
 
 	for _, tt := range prefixTests {
 		l := lexer.New(tt.input)
-		p := New(l)
+		p := New(l, "./")
 		program := p.ParseProgram()
 		checkParserErrors(t, p)
 
@@ -251,7 +251,7 @@ func TestParsingInfixExpressions(t *testing.T) {
 
 	for _, tt := range infixTests {
 		l := lexer.New(tt.input)
-		p := New(l)
+		p := New(l, "./")
 		program := p.ParseProgram()
 		checkParserErrors(t, p)
 
@@ -403,7 +403,7 @@ func TestOperatorPrecedenceParsing(t *testing.T) {
 	}
 	for _, tt := range tests {
 		l := lexer.New(tt.input)
-		p := New(l)
+		p := New(l, "./")
 		program := p.ParseProgram()
 		checkParserErrors(t, p)
 		actual := program.String()
@@ -424,7 +424,7 @@ func TestBooleanExpression(t *testing.T) {
 
 	for _, tt := range tests {
 		l := lexer.New(tt.input)
-		p := New(l)
+		p := New(l, "./")
 
 		program := p.ParseProgram()
 		checkParserErrors(t, p)
@@ -453,7 +453,7 @@ func TestSeExpression(t *testing.T) {
 	input := `se (x < y) { x }`
 
 	l := lexer.New(input)
-	p := New(l)
+	p := New(l, "./")
 	program := p.ParseProgram()
 	checkParserErrors(t, p)
 
@@ -499,7 +499,7 @@ func TestSeSenaoExpression(t *testing.T) {
 	input := `se (x < y) { x } senao { y }`
 
 	l := lexer.New(input)
-	p := New(l)
+	p := New(l, "./")
 	program := p.ParseProgram()
 	checkParserErrors(t, p)
 
@@ -558,7 +558,7 @@ func TestProcLiteralParsing(t *testing.T) {
 	input := `proc(x, y) {x + y;}`
 
 	l := lexer.New(input)
-	p := New(l)
+	p := New(l, "./")
 	program := p.ParseProgram()
 	checkParserErrors(t, p)
 
@@ -608,7 +608,7 @@ func TestFunctionParameterParsing(t *testing.T) {
 	}
 	for _, tt := range tests {
 		l := lexer.New(tt.input)
-		p := New(l)
+		p := New(l, "./")
 		program := p.ParseProgram()
 		checkParserErrors(t, p)
 		stmt := program.Statements[0].(*ast.ExpressionStatement)
@@ -626,7 +626,7 @@ func TestFunctionParameterParsing(t *testing.T) {
 func TestCallExpressionParsing(t *testing.T) {
 	input := "add(1, 2 * 3, 4 + 5);"
 	l := lexer.New(input)
-	p := New(l)
+	p := New(l, "./")
 	program := p.ParseProgram()
 	checkParserErrors(t, p)
 	if len(program.Statements) != 1 {
@@ -659,7 +659,7 @@ func TestStringLiteralExpression(t *testing.T) {
 	input := `"hello world";`
 
 	l := lexer.New(input)
-	p := New(l)
+	p := New(l, "./")
 	program := p.ParseProgram()
 	checkParserErrors(t, p)
 
@@ -679,7 +679,7 @@ func TestParsingListaLiterals(t *testing.T) {
 	input := "[1, 2 * 2, 3 + 3]"
 
 	l := lexer.New(input)
-	p := New(l)
+	p := New(l, "./")
 	program := p.ParseProgram()
 	checkParserErrors(t, p)
 
@@ -706,7 +706,7 @@ func TestParsingIndexExpressions(t *testing.T) {
 	input := "minha_lista[1 + 1];"
 
 	l := lexer.New(input)
-	p := New(l)
+	p := New(l, "./")
 	program := p.ParseProgram()
 	checkParserErrors(t, p)
 
@@ -741,7 +741,7 @@ func TestAssignStatements(t *testing.T) {
 
 	for _, tt := range tests {
 		l := lexer.New(tt.input)
-		p := New(l)
+		p := New(l, "./")
 		program := p.ParseProgram()
 
 		checkParserErrors(t, p)
@@ -775,7 +775,7 @@ func TestRepeteExpression(t *testing.T) {
 			  }`
 
 	l := lexer.New(input)
-	p := New(l)
+	p := New(l, "./")
 	program := p.ParseProgram()
 	checkParserErrors(t, p)
 
@@ -827,7 +827,7 @@ func TestParsingEstruturaLiterals(t *testing.T) {
 			};
 			`
 	l := lexer.New(input)
-	p := New(l)
+	p := New(l, "./")
 	program := p.ParseProgram()
 	checkParserErrors(t, p)
 	stmt, ok := program.Statements[0].(*ast.ExpressionStatement)
@@ -894,7 +894,7 @@ func TestParsingEstruturaIndex(t *testing.T) {
 				{op <- proc(x) { x + 2; }}["op"](2)
 			`
 	l := lexer.New(input)
-	p := New(l)
+	p := New(l, "./")
 	program := p.ParseProgram()
 	checkParserErrors(t, p)
 	stmt, ok := program.Statements[0].(*ast.ExpressionStatement)
@@ -983,7 +983,7 @@ func TestImportaStatement(t *testing.T) {
 			`
 
 	l := lexer.New(input)
-	p := New(l)
+	p := New(l, "./")
 	program := p.ParseProgram()
 	checkParserErrors(t, p)
 
@@ -995,8 +995,7 @@ func TestImportaStatement(t *testing.T) {
 	}
 
 	if len(currentSttms) != 3 {
-		fmt.Println(currentSttms)
-		t.Fatalf("currenSttms length not 3. got=%d", len(currentSttms))
+		t.Fatalf("currentSttms length not 3. got=%d", len(currentSttms))
 	}
 
 	stmt, ok := currentSttms[0].(*ast.ImportaStatement)
@@ -1005,12 +1004,12 @@ func TestImportaStatement(t *testing.T) {
 		t.Fatalf("currentStatements[0] not ast.ImportaStatement. got=%T", currentSttms[0])
 	}
 
-	if !testStringLiteral(t, stmt.FilePath, "./biblioteca.tto") {
+	if !testStringLiteral(t, stmt.FilePath, "biblioteca.tto") {
 		t.Fatalf("stmt.FilePath not a ast.StringLiteral. got=%T", stmt.FilePath)
 	}
 
-	if len(stmt.Program.Statements) != 2 {
-		t.Fatalf("stmt.Program.Statement length not 2. got=%d", len(stmt.Program.Statements))
+	if len(stmt.Program.Statements) != 1 {
+		t.Fatalf("stmt.Program.Statement length not 1. got=%d", len(stmt.Program.Statements))
 	}
 
 	criaSttm, ok := stmt.Program.Statements[0].(*ast.CriaStatement)

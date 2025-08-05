@@ -2,6 +2,7 @@ package parser
 
 import (
 	"fmt"
+	"path/filepath"
 	"strconv"
 
 	"github.com/teohen/ttolang/ast"
@@ -44,7 +45,8 @@ type Parser struct {
 	curToken  token.Token
 	peekToken token.Token
 
-	errors []string
+	errors      []string
+	curFilePath string
 
 	prefixParseFns map[token.TokenType]prefixParseFn
 	infixParseFns  map[token.TokenType]infixParseFn
@@ -55,8 +57,9 @@ type (
 	infixParseFn  func(ast.Expression) ast.Expression
 )
 
-func New(l *lexer.Lexer) *Parser {
+func New(l *lexer.Lexer, path string) *Parser {
 	p := &Parser{l: l, errors: []string{}}
+	p.curFilePath = path
 
 	p.nextToken()
 	p.nextToken()
@@ -159,6 +162,7 @@ func (p *Parser) parseStatement() []ast.Statement {
 	if p.curToken.Type == token.IMPORT {
 		importaStt := p.parseImportaStatement()
 		sttms = append(sttms, importaStt.Program.Statements...)
+		sttms = append(sttms, &importaStt)
 		return sttms
 	} else if p.curToken.Type == token.LET {
 		sttms = append(sttms, p.parseCriaStatement())
@@ -226,7 +230,6 @@ func (p *Parser) parseExpressionStatement() *ast.ExpressionStatement {
 }
 
 func (p *Parser) parseExpression(precedence int) ast.Expression {
-	//fmt.Println(p.curToken.Literal)
 	prefix := p.prefixParseFns[p.curToken.Type]
 
 	if prefix == nil {
@@ -596,22 +599,31 @@ func (p *Parser) parseEstruturaItems(end token.TokenType) map[string]ast.Express
 	return EstruturaMap
 }
 
-// TODO: check file extension
-// TODO make imports relative to the file not the program
-
 func (p *Parser) parseImportaStatement() ast.ImportaStatement {
 	importaStt := &ast.ImportaStatement{Token: p.curToken}
 	p.nextToken()
-	importaStt.FilePath = &ast.StringLiteral{Token: p.curToken, Value: p.curToken.Literal}
 
-	err, packageText := utils.LoadFile(p.curToken.Literal)
+	ext := filepath.Ext(p.curToken.Literal)
+
+	if ext != ".tto" {
+		msg := fmt.Sprintf("apenas arquivos com extensão \".tto\" são aceitos. Recebeu %s", ext)
+		p.errors = append(p.errors, msg)
+		return *importaStt
+	}
+
+	cleanPath := filepath.Clean(p.curToken.Literal)
+	dir := filepath.Dir(p.curFilePath) + string(filepath.Separator)
+
+	importaStt.FilePath = &ast.StringLiteral{Token: p.curToken, Value: cleanPath}
+
+	err, packageText := utils.LoadFile(dir, cleanPath)
 	if err != nil {
-		msg := fmt.Sprintf("Não foi possível importar o pacote: %s. Motivo: %s", importaStt.FilePath, err)
+		msg := fmt.Sprintf("não foi possível importar o pacote: %s. Motivo: %s", p.curToken.Literal, err)
 		p.errors = append(p.errors, msg)
 	}
 
 	tks := lexer.New(packageText)
-	parser := New(tks)
+	parser := New(tks, filepath.Join(dir, cleanPath))
 
 	pgrm := parser.ParseProgram()
 
@@ -622,8 +634,7 @@ func (p *Parser) parseImportaStatement() ast.ImportaStatement {
 
 	importaStt.Program = *pgrm
 
-	importaStt.Program.Statements = append(importaStt.Program.Statements, importaStt)
-
 	p.nextToken()
+
 	return *importaStt
 }
