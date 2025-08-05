@@ -11,5 +11,7 @@ cria mostra_nome <- proc() {
   mostra(nome)
 }
 
+mostra_nome();
+
 // saída: ttolang
 ```
