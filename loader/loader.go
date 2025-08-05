@@ -15,14 +15,14 @@ import (
 
 func Load(path string) {
 	env := object.NewEnvironment()
-	err, code := utils.LoadFile("./" + path)
+	err, code := utils.LoadFile("./", path)
 
 	if err != nil {
 		log.Fatalf("Error opening .tto file in path (%s): %s", path, err)
 	}
 
 	l := lexer.New(code)
-	p := parser.New(l)
+	p := parser.New(l, path)
 
 	program := p.ParseProgram()
 

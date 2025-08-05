@@ -6,8 +6,8 @@ import (
 	"os"
 )
 
-func LoadFile(path string) (error, string) {
-	file, err := os.Open(path)
+func LoadFile(from, path string) (error, string) {
+	file, err := os.Open(from + path)
 
 	if err != nil {
 		return err, ""
