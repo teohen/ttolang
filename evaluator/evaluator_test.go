@@ -6,6 +6,7 @@ import (
 	"github.com/teohen/ttolang/lexer"
 	"github.com/teohen/ttolang/object"
 	"github.com/teohen/ttolang/parser"
+	"github.com/teohen/ttolang/utils"
 )
 
 func TestEvalIntegerExpression(t *testing.T) {
@@ -598,6 +599,48 @@ func TestEstruturaLiteral(t *testing.T) {
 
 }
 
+func TestImportaStatements(t *testing.T) {
+	nomePackage := `
+		cria nome <- "teteo";
+	`
+	idadePackage := `
+	cria idade <- 3;
+	`
+
+	err := utils.WriteFile("./nome_package.tto", nomePackage)
+	err = utils.WriteFile("./idade_package.tto", idadePackage)
+
+	if err != nil {
+		t.Fatalf("Fail to create package file. got=%s", err.Error())
+	}
+
+	tests := []struct {
+		input    string
+		expected interface{}
+	}{
+		{"importa \"./nome_package.tto\"; anexar(nome, \"dev\");", "teteodev"},
+		{"importa \"./idade_package.tto\"; cria dez <- 10; dez <- dez + idade;", 13},
+	}
+
+	for _, tt := range tests {
+		evaluated := testEval(tt.input)
+
+		switch tt.expected.(type) {
+		case string:
+			expected := tt.expected.(string)
+			testStringObject(t, evaluated, expected)
+			break
+
+		case int64:
+			expected := tt.expected.(int64)
+			testIntegerObject(t, evaluated, expected)
+			break
+		}
+
+	}
+
+}
+
 func testNullObject(t *testing.T, obj object.Object) bool {
 	if obj != NULL {
 		t.Errorf("object is not NULL. got=%T (%v)", obj, obj)
@@ -608,7 +651,7 @@ func testNullObject(t *testing.T, obj object.Object) bool {
 
 func testEval(input string) object.Object {
 	l := lexer.New(input)
-	p := parser.New(l)
+	p := parser.New(l, "./")
 	program := p.ParseProgram()
 	env := object.NewEnvironment()
 

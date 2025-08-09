@@ -1,0 +1,5 @@
+importa "./mtm/pacote.tto";
+
+cria res <- multiplicacao(4,5);
+mostra(res);
+

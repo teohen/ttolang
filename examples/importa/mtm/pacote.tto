@@ -1,0 +1,12 @@
+importa "./operacoes/soma.tto";
+cria multiplicacao <- proc(p, k) {
+    cria resultado <- 0;
+    cria i <- 0;
+
+    repete (i <- i + 1 ate (i > k | i = k)) {
+        resultado <- resultado + p
+    }
+
+    devolve resultado;
+}
+

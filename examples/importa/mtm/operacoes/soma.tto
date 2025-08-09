@@ -1,0 +1,3 @@
+cria soma <- proc(x, y) {
+    devolve x + y;
+}
