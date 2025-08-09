@@ -21,4 +21,4 @@ Uma linguagem interpretada, tipada dinamicamente e super divertida criada por mi
 - [repetição](docs/repetição.md)
 - [atribuição](docs/atribuição.md)
 - [problema](docs/problema.md)
-- [pactoes](docs/pacotes.md)
+- [pacotes](docs/pacotes.md)
